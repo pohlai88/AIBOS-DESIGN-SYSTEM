@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMNI // ULTIMATE ERP CONSOLE</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* =================================================================
+           OMNI CORE: THE PHYSICS OF WORK
+           Integrating "God Mode" Aesthetics with "IDE" Density
+           ================================================================= */
+        :root {
+            /* DIMENSIONS */
+            --w-side: 260px;
+            --w-insp: 360px;
+            --h-head: 56px;
+            --h-foot: 32px;
+            
+            /* PALETTE (The "Void" Theme) */
+            --bg-void: #050505;
+            --bg-panel: #0a0a0b;
+            --bg-surface: #141416;
+            --bg-active: #1f1f22;
+            
+            /* BORDERS & SEPARATORS */
+            --border: #27272a;
+            --border-light: #3f3f46;
+            
+            /* SIGNALS */
+            --c-text: #e4e4e7;
+            --c-dim: #71717a;
+            --c-accent: #eab308; /* Amber (Production) */
+            --c-success: #10b981; /* Emerald (Finance) */
+            --c-danger: #f43f5e; /* Rose (Alerts) */
+            --c-info: #3b82f6;   /* Blue (Logistics) */
+        }
+
+        * { box-sizing: border-box; outline: none; }
+        
+        body { 
+            background: var(--bg-void); color: var(--c-text);
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 13px; overflow: hidden; /* App Mode */
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- THE ATMOSPHERE (Grain + Vignette) --- */
+        .omni-bg {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.03), transparent 70%);
+        }
+        .omni-bg::after {
+            content: ""; position: absolute; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            opacity: 0.5; mix-blend-mode: overlay;
+        }
+
+        /* --- STATE MACHINE (The "Brain") --- 
+           Radio buttons control the view state instantly without JS.
+        */
+        input[name="view"] { display: none; }
+
+        /* Logic: When radio is checked, show corresponding panel */
+        #v-grid:checked ~ .omni-shell #pane-grid { display: block; }
+        #v-board:checked ~ .omni-shell #pane-board { display: block; }
+        #v-gantt:checked ~ .omni-shell #pane-gantt { display: block; }
+
+        /* Logic: Highlight the active tab */
+        #v-grid:checked ~ .omni-shell .tab-grid { background: var(--bg-active); color: white; border-color: var(--c-accent); }
+        #v-board:checked ~ .omni-shell .tab-board { background: var(--bg-active); color: white; border-color: var(--c-accent); }
+        #v-gantt:checked ~ .omni-shell .tab-gantt { background: var(--bg-active); color: white; border-color: var(--c-accent); }
+
+        /* --- THE SHELL (Grid Layout) --- */
+        .omni-shell {
+            position: relative; z-index: 1;
+            display: grid;
+            grid-template-areas: 
+                "head head head"
+                "side main insp"
+                "foot foot foot";
+            grid-template-columns: var(--w-side) 1fr var(--w-insp);
+            grid-template-rows: var(--h-head) 1fr var(--h-foot);
+            height: 100vh; width: 100vw;
+        }
+
+        /* ---------------------------------------------------------
+           1. HEADER (Command Center)
+           --------------------------------------------------------- */
+        .omni-head {
+            grid-area: head;
+            background: rgba(10, 10, 11, 0.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; z-index: 50;
+        }
+
+        .brand { font-weight: 700; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
+        .mark { 
+            width: 24px; height: 24px; background: var(--c-accent); 
+            border-radius: 6px; box-shadow: 0 0 12px rgba(234, 179, 8, 0.4);
+        }
+
+        .search-bar {
+            position: relative; width: 400px;
+        }
+        .search-input {
+            width: 100%; background: var(--bg-surface); border: 1px solid var(--border);
+            color: white; padding: 8px 12px 8px 36px; border-radius: 6px;
+            font-size: 13px; transition: all 0.2s;
+        }
+        .search-input:focus { border-color: var(--c-accent); box-shadow: 0 0 0 1px var(--c-accent); }
+        .search-icon { position: absolute; left: 10px; top: 9px; color: var(--c-dim); font-size: 12px; }
+        .kbd { 
+            position: absolute; right: 8px; top: 8px; font-size: 10px; 
+            color: var(--c-dim); border: 1px solid var(--border); 
+            padding: 1px 4px; border-radius: 4px; 
+        }
+
+        /* ---------------------------------------------------------
+           2. SIDEBAR (Navigation)
+           --------------------------------------------------------- */
+        .omni-side {
+            grid-area: side;
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            padding: 16px 8px;
+        }
+
+        .nav-section { margin-bottom: 24px; }
+        .nav-label { 
+            font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; 
+            color: var(--c-dim); margin-bottom: 8px; padding-left: 8px; 
+        }
+        .nav-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 10px; border-radius: 6px; cursor: pointer;
+            color: #a1a1aa; transition: 0.1s;
+        }
+        .nav-item:hover { background: var(--bg-surface); color: white; }
+        .nav-item.active { background: var(--bg-active); color: white; border: 1px solid var(--border); }
+        
+        .badge { 
+            font-size: 9px; padding: 2px 6px; border-radius: 4px; 
+            background: var(--border); color: white; font-weight: 600;
+        }
+        .badge.warn { background: rgba(234, 179, 8, 0.2); color: var(--c-accent); border: 1px solid rgba(234, 179, 8, 0.3); }
+
+        /* ---------------------------------------------------------
+           3. MAIN WORKSPACE (The Transformer)
+           --------------------------------------------------------- */
+        .omni-main {
+            grid-area: main;
+            background: var(--bg-void);
+            display: grid;
+            grid-template-rows: 48px 1fr; /* Toolbar + Viewport */
+            overflow: hidden;
+        }
+
+        /* View Switcher Toolbar */
+        .view-toolbar {
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; background: var(--bg-panel);
+        }
+
+        .view-tabs {
+            display: flex; gap: 4px; background: var(--bg-surface); 
+            padding: 3px; border-radius: 6px; border: 1px solid var(--border);
+        }
+        .tab-btn {
+            padding: 4px 12px; font-size: 12px; cursor: pointer; border-radius: 4px;
+            color: var(--c-dim); font-weight: 500; border: 1px solid transparent;
+            transition: 0.1s;
+        }
+        .tab-btn:hover { color: white; }
+
+        /* The Viewport Container */
+        .viewport { position: relative; overflow: hidden; height: 100%; }
+        .pane { display: none; height: 100%; overflow: hidden; animation: fade-in 0.2s ease-out; }
+        
+        @keyframes fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- VIEW A: THE SUPER GRID (Excel Replacement) --- */
+        .super-grid-container {
+            height: 100%; overflow: auto;
+            scrollbar-width: thin; scrollbar-color: var(--border-light) var(--bg-void);
+        }
+        .super-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        
+        /* Sticky Headers & Frozen Columns */
+        .super-table th {
+            position: sticky; top: 0; z-index: 10;
+            background: var(--bg-surface); height: 40px; text-align: left; padding: 0 12px;
+            border-bottom: 1px solid var(--border); color: var(--c-dim); font-size: 11px; text-transform: uppercase;
+        }
+        .super-table td {
+            height: 40px; padding: 0 12px; border-bottom: 1px solid var(--bg-active);
+            border-right: 1px solid var(--bg-active); background: var(--bg-void);
+            white-space: nowrap;
+        }
+        /* Row Hover */
+        .super-table tr:hover td { background: var(--bg-surface); }
+        
+        /* Sticky First Column */
+        .super-table td:first-child, .super-table th:first-child {
+            position: sticky; left: 0; z-index: 11;
+            background: var(--bg-panel); border-right: 2px solid var(--border);
+        }
+        /* Corner fix */
+        .super-table th:first-child { z-index: 20; background: var(--bg-surface); }
+
+        /* In-Cell Edit */
+        [contenteditable]:focus { 
+            background: var(--bg-active); outline: 2px solid var(--c-accent); color: white; z-index: 2; position: relative;
+        }
+
+        /* --- VIEW B: THE KANBAN (Workflow) --- */
+        .kanban-board {
+            display: grid; grid-template-columns: repeat(4, 300px); gap: 12px;
+            height: 100%; padding: 16px; overflow-x: auto;
+        }
+        .k-col {
+            background: var(--bg-panel); border: 1px solid var(--border);
+            border-radius: 8px; display: flex; flex-direction: column;
+        }
+        .k-head {
+            padding: 12px; border-bottom: 1px solid var(--border);
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            display: flex; justify-content: space-between;
+        }
+        .k-body { padding: 8px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        
+        .k-card {
+            background: var(--bg-surface); border: 1px solid var(--border);
+            padding: 12px; border-radius: 6px; cursor: grab;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .k-card:hover { 
+            border-color: var(--c-dim); transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5); 
+        }
+
+        /* --- VIEW C: THE GANTT (Timeline) --- */
+        .gantt-wrap { padding: 16px; overflow: auto; height: 100%; }
+        .gantt-row { display: grid; grid-template-columns: 160px 1fr; gap: 0; border-bottom: 1px solid var(--bg-active); height: 36px; }
+        .gantt-label { 
+            display: flex; align-items: center; font-size: 12px; font-weight: 500; 
+            border-right: 1px solid var(--border); background: var(--bg-panel); padding-left: 12px;
+            position: sticky; left: 0; z-index: 5;
+        }
+        .gantt-track {
+            display: grid; grid-template-columns: repeat(30, 1fr); /* 30 Days */
+            background: var(--bg-void); position: relative; align-items: center;
+        }
+        .g-bar {
+            height: 18px; border-radius: 4px; background: var(--c-accent); opacity: 0.8;
+            grid-column: var(--s) / span var(--d); /* Magic CSS Grid logic */
+            font-size: 10px; color: black; display: flex; align-items: center; padding-left: 6px; font-weight: 700;
+            cursor: pointer; transition: 0.1s;
+        }
+        .g-bar:hover { transform: scaleY(1.1); z-index: 2; opacity: 1; box-shadow: 0 0 10px var(--c-accent); }
+
+        /* ---------------------------------------------------------
+           4. INSPECTOR (CRUD Context)
+           --------------------------------------------------------- */
+        .omni-insp {
+            grid-area: insp;
+            background: var(--bg-panel);
+            border-left: 1px solid var(--border);
+            display: flex; flex-direction: column;
+        }
+        
+        .insp-head {
+            padding: 20px; border-bottom: 1px solid var(--border);
+        }
+        .insp-body {
+            padding: 20px; overflow-y: auto; flex: 1;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+        
+        /* Form Elements */
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .label { font-size: 11px; text-transform: uppercase; color: var(--c-dim); font-weight: 600; letter-spacing: 0.05em; }
+        .input {
+            background: var(--bg-surface); border: 1px solid var(--border);
+            color: white; padding: 10px; border-radius: 6px;
+        }
+        .input:focus { border-color: var(--c-accent); }
+
+        /* Status Select (Custom) */
+        .status-select {
+            display: flex; gap: 1px; background: var(--border); padding: 1px; border-radius: 6px;
+        }
+        .status-opt {
+            flex: 1; text-align: center; padding: 6px; font-size: 11px; cursor: pointer;
+            background: var(--bg-panel); color: var(--c-dim);
+        }
+        .status-opt.active { background: var(--bg-active); color: white; font-weight: 600; }
+        .status-opt:first-child { border-radius: 5px 0 0 5px; }
+        .status-opt:last-child { border-radius: 0 5px 5px 0; }
+
+        /* Footer */
+        .omni-foot {
+            grid-area: foot;
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; font-size: 11px; color: var(--c-dim);
+        }
+
+        /* Utilities */
+        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+        .dot.live { background: var(--c-success); box-shadow: 0 0 8px var(--c-success); animation: pulse 2s infinite; }
+        .dot.warn { background: var(--c-accent); }
+        .text-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+    </style>
+</head>
+<body>
+
+    <input type="radio" name="view" id="v-grid" checked>
+    <input type="radio" name="view" id="v-board">
+    <input type="radio" name="view" id="v-gantt">
+
+    <div class="omni-bg"></div>
+
+    <div class="omni-shell">
+        
+        <header class="omni-head">
+            <div class="brand">
+                <div class="mark"></div>
+                <span>OMNI ERP</span>
+                <span style="color: var(--c-dim); font-weight: 400;">// v2.0</span>
+            </div>
+            
+            <div class="search-bar">
+                <span class="search-icon">☌</span>
+                <input type="text" class="search-input" placeholder="Search orders, invoices, or commands...">
+                <span class="kbd">⌘K</span>
+            </div>
+
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <div style="display: flex; gap: 8px; align-items: center; font-size: 11px; color: var(--c-dim);">
+                    <span class="dot live"></span> SOCKET_CONNECTED
+                </div>
+                <div class="na-avatar"></div>
+            </div>
+        </header>
+
+        <aside class="omni-side">
+            <div class="nav-section">
+                <div class="nav-label">Operations</div>
+                <div class="nav-item active">
+                    <span>Manufacturing</span> <span class="badge warn">12</span>
+                </div>
+                <div class="nav-item"><span>Procurement</span></div>
+                <div class="nav-item"><span>Inventory</span></div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-label">Finance</div>
+                <div class="nav-item"><span>General Ledger</span></div>
+                <div class="nav-item"><span>Payables</span> <span class="badge">4</span></div>
+                <div class="nav-item"><span>Receivables</span></div>
+            </div>
+
+            <div style="margin-top: auto; padding: 12px; background: var(--bg-surface); border-radius: 8px; border: 1px solid var(--border);">
+                <div class="nav-label" style="margin: 0 0 8px 0;">Monthly Goal</div>
+                <div style="height: 4px; background: var(--bg-active); border-radius: 2px; overflow: hidden;">
+                    <div style="width: 72%; background: var(--c-success); height: 100%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 6px; font-size: 10px; color: var(--c-text);">
+                    <span>RM 842k</span>
+                    <span>72%</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="omni-main">
+            <div class="view-toolbar">
+                <div class="view-tabs">
+                    <label for="v-grid" class="tab-btn tab-grid">Grid View</label>
+                    <label for="v-board" class="tab-btn tab-board">Kanban</label>
+                    <label for="v-gantt" class="tab-btn tab-gantt">Timeline</label>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="na-btn">Filter</button>
+                    <button class="na-btn-primary">+ Create WO</button>
+                </div>
+            </div>
+
+            <div class="viewport">
+                
+                <div id="pane-grid" class="pane">
+                    <div class="super-grid-container">
+                        <table class="super-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 140px;">Order #</th>
+                                    <th>Status</th>
+                                    <th>Customer</th>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Value</th>
+                                    <th>Due Date</th>
+                                    <th>Assignee</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-mono" style="color: var(--c-accent); font-weight: 700;">WO-2025-001</td>
+                                    <td><span class="badge warn">WIP</span></td>
+                                    <td>Acme Corp</td>
+                                    <td contenteditable="true">Circuit A1</td>
+                                    <td class="text-mono" style="text-align: right;">500</td>
+                                    <td class="text-mono" style="text-align: right;">$12,450</td>
+                                    <td>2025-02-15</td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                            <div class="na-avatar" style="width: 20px; height: 20px;"></div>
+                                            <span>D. Chen</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <script>
+                                    for(let i=2; i<=20; i++) {
+                                        document.write(`
+                                        <tr>
+                                            <td class="text-mono" style="color: #a1a1aa;">WO-2025-0${i < 10 ? '0'+i : i}</td>
+                                            <td><span class="badge">Planned</span></td>
+                                            <td>Client-${i}</td>
+                                            <td contenteditable="true">Component X-${i}</td>
+                                            <td class="text-mono" style="text-align: right;">${Math.floor(Math.random()*1000)}</td>
+                                            <td class="text-mono" style="text-align: right;">$${(Math.random()*5000).toFixed(0)}</td>
+                                            <td>2025-02-${10 + (i%18)}</td>
+                                            <td>--</td>
+                                        </tr>`);
+                                    }
+                                </script>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="pane-board" class="pane">
+                    <div class="kanban-board">
+                        <div class="k-col">
+                            <div class="k-head"><span>Planned</span> <span class="badge">8</span></div>
+                            <div class="k-body">
+                                <div class="k-card">
+                                    <div style="font-weight: 600; margin-bottom: 4px;">WO-2025-002</div>
+                                    <div style="font-size: 11px; color: var(--c-dim);">Circuit Board B2</div>
+                                </div>
+                                <div class="k-card">
+                                    <div style="font-weight: 600; margin-bottom: 4px;">WO-2025-005</div>
+                                    <div style="font-size: 11px; color: var(--c-dim);">Thermal Casing</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="k-col">
+                            <div class="k-head" style="border-top: 2px solid var(--c-accent);"><span>In Progress</span> <span class="badge warn">2</span></div>
+                            <div class="k-body">
+                                <div class="k-card" style="border-left: 2px solid var(--c-accent);">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                        <span style="font-weight: 600;">WO-2025-001</span>
+                                        <span style="font-size: 10px; color: var(--c-accent);">75%</span>
+                                    </div>
+                                    <div style="font-size: 11px; color: var(--c-dim); margin-bottom: 8px;">Circuit A1</div>
+                                    <div style="height: 4px; background: var(--bg-active); border-radius: 2px; overflow: hidden;">
+                                        <div style="width: 75%; background: var(--c-accent); height: 100%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="k-col">
+                            <div class="k-head" style="border-top: 2px solid var(--c-info);"><span>Quality Control</span> <span class="badge">1</span></div>
+                            <div class="k-body">
+                                <div class="k-card">
+                                    <div style="font-weight: 600; margin-bottom: 4px;">WO-2025-003</div>
+                                    <div style="font-size: 11px; color: var(--c-dim);">Power Unit</div>
+                                    <div class="badge">Inspection</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="k-col">
+                            <div class="k-head" style="border-top: 2px solid var(--c-success);"><span>Complete</span> <span class="badge">42</span></div>
+                            <div class="k-body">
+                                <div class="k-card" style="opacity: 0.6;">
+                                    <div style="font-weight: 600;">WO-2024-999</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pane-gantt" class="pane">
+                    <div class="gantt-wrap">
+                        <div style="display: grid; grid-template-columns: 160px 1fr; border-bottom: 1px solid var(--border); margin-bottom: 10px; padding-bottom: 8px;">
+                            <div style="font-weight: 600; padding-left: 12px;">Order Sequence</div>
+                            <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--c-dim); padding-right: 12px;">
+                                <span>Week 1</span><span>Week 2</span><span>Week 3</span><span>Week 4</span>
+                            </div>
+                        </div>
+                        
+                        <div class="gantt-row">
+                            <div class="gantt-label">WO-2025-001</div>
+                            <div class="gantt-track">
+                                <div class="g-bar" style="--s: 2; --d: 5; background: var(--c-accent);">Assembly</div>
+                            </div>
+                        </div>
+                        <div class="gantt-row">
+                            <div class="gantt-label">WO-2025-002</div>
+                            <div class="gantt-track">
+                                <div class="g-bar" style="--s: 6; --d: 4; background: var(--c-dim);">Prep</div>
+                            </div>
+                        </div>
+                        <div class="gantt-row">
+                            <div class="gantt-label">WO-2025-003</div>
+                            <div class="gantt-track">
+                                <div class="g-bar" style="--s: 8; --d: 3; background: var(--c-info);">QC</div>
+                            </div>
+                        </div>
+                        <div class="gantt-row">
+                            <div class="gantt-label">WO-2025-004</div>
+                            <div class="gantt-track">
+                                <div class="g-bar" style="--s: 12; --d: 6; background: var(--c-success);">Shipping</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <aside class="omni-insp">
+            <div class="insp-head">
+                <div class="label" style="margin-bottom: 4px;">Selected Context</div>
+                <div style="font-size: 18px; font-weight: 700; color: white;">WO-2025-001</div>
+                <div style="color: var(--c-dim); font-size: 12px; margin-top: 4px;">Acme Corp // High Priority</div>
+            </div>
+
+            <div class="insp-body">
+                <div class="field">
+                    <div class="label">Workflow Stage</div>
+                    <div class="status-select">
+                        <div class="status-opt">Plan</div>
+                        <div class="status-opt active">WIP</div>
+                        <div class="status-opt">QC</div>
+                        <div class="status-opt">Done</div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="label">Target Quantity</div>
+                    <input type="text" class="input" value="500">
+                </div>
+
+                <div class="field">
+                    <div class="label">Due Date</div>
+                    <input type="date" class="input" value="2025-02-15">
+                </div>
+
+                <div class="field">
+                    <div class="label">Assigned Resource</div>
+                    <select class="input">
+                        <option>Work Center A</option>
+                        <option>Work Center B</option>
+                    </select>
+                </div>
+
+                <div style="height: 1px; background: var(--border); margin: 10px 0;"></div>
+
+                <div class="label">Dependencies</div>
+                <div style="background: var(--bg-surface); padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px;">
+                        <span>Raw Materials</span>
+                        <span style="color: var(--c-success);">Available</span>
+                    </div>
+                    <div style="height: 4px; background: var(--bg-active); border-radius: 2px;">
+                        <div style="width: 100%; background: var(--c-success); height: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 20px; border-top: 1px solid var(--border);">
+                <button class="na-btn-primary" style="width: 100%; justify-content: center;">Save Changes</button>
+            </div>
+        </aside>
+
+        <footer class="omni-foot">
+            <div style="display: flex; gap: 16px;">
+                <span>SYNC: <span style="color: var(--c-success);">OK</span></span>
+                <span>LATENCY: 14ms</span>
+            </div>
+            <div>
+                <span>DB: PROD-MY-01</span>
+            </div>
+        </footer>
+
+    </div>
+
+</body>
+</html>

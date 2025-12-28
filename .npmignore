@@ -1,0 +1,45 @@
+# Development files
+node_modules/
+.vscode/
+*.log
+.DS_Store
+
+# Source files (users only need compiled output)
+scripts/
+postcss.config.js
+tailwind.config.js
+eslint.config.js
+.stylelintrc.json
+.stylelintignore
+.prettierrc.json
+
+# Development documentation
+docs/
+prototypes/
+archive/
+
+# Build artifacts (will be included via package.json "files")
+# dist/ is included, but we exclude source maps if any
+*.map
+
+# Git files
+.git/
+.gitignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Testing
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+__tests__/
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+

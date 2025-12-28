@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en" class="na-dark">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nexus Æther — Kinetic Console (Evo 4)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           1. CORE & "MAGIC" VARIABLES
+           ========================================= */
+        :root {
+            /* Palette: Deep Void & Electric Gold */
+            --color-void: #050505; /* Darker than before */
+            --color-paper: #0a0a0c;
+            --color-paper-2: #131316;
+            --color-lux: #f0f0f2;
+            --color-clay: #71717a;
+            --color-gold: #fbbf24; /* Brighter Amber */
+            --color-gold-dim: rgba(251, 191, 36, 0.15);
+            --color-success: #34d399;
+            --color-error: #f43f5e;
+            --color-stroke: #27272a;
+            --color-stroke-soft: #18181b;
+
+            /* Physics */
+            --ease-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --ease-smooth: cubic-bezier(0.33, 1, 0.68, 1);
+        }
+
+        /* =========================================
+           2. CINEMATIC BACKGROUND (The "Atmosphere")
+           ========================================= */
+        body {
+            background-color: var(--color-void);
+            color: var(--color-lux);
+            font-family: "Inter", sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .na-bg-grain {
+            position: fixed; inset: 0; z-index: -1; pointer-events: none;
+            /* Complex lighting: Top spotlight + Bottom Vignette */
+            background: 
+                radial-gradient(circle at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 60%),
+                radial-gradient(circle at 50% 100%, rgba(0,0,0,0.8) 0%, transparent 50%),
+                #050505;
+        }
+
+        /* The "Film Grain" Texture */
+        .na-bg-grain::after {
+            content: ""; position: absolute; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            opacity: 0.6; mix-blend-mode: overlay;
+        }
+
+        /* =========================================
+           3. STRUCTURE & LAYOUT
+           ========================================= */
+        .na-shell {
+            display: grid; grid-template-columns: 260px 1fr; min-height: 100vh;
+            transition: filter 0.3s ease;
+        }
+
+        /* --- THE SIDEBAR (Glassmorphism) --- */
+        .na-sidebar {
+            background: rgba(10, 10, 12, 0.65);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid var(--color-stroke);
+            padding: 24px; display: flex; flex-direction: column;
+            position: sticky; top: 0; height: 100vh; z-index: 20;
+        }
+
+        /* --- THE HEADER (Command Center) --- */
+        .na-header {
+            position: sticky; top: 0; z-index: 30;
+            background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--color-stroke);
+            padding: 0 32px; height: 72px;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: transform 0.3s ease;
+        }
+
+        /* =========================================
+           4. "WOW" MICRO-INTERACTIONS
+           ========================================= */
+        
+        /* 1. The "Spotlight" Card Effect */
+        .na-card {
+            background: linear-gradient(180deg, var(--color-paper) 0%, var(--color-void) 100%);
+            border: 1px solid var(--color-stroke);
+            border-radius: 12px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s, border-color 0.3s;
+        }
+
+        /* The "Glint" - A light passing over the border on hover */
+        .na-card::after {
+            content: ""; position: absolute; inset: 0;
+            background: radial-gradient(600px circle at var(--x, 50%) var(--y, 0%), rgba(255,255,255,0.06), transparent 40%);
+            opacity: 0; transition: opacity 0.3s; pointer-events: none;
+        }
+        .na-card:hover::after { opacity: 1; }
+        
+        /* Interactive Lift */
+        .na-card-interactive:hover {
+            transform: translateY(-4px) scale(1.005);
+            border-color: var(--color-stroke-strong);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        /* 2. "Living" Chart Bars (CSS Animation) */
+        @keyframes breathe {
+            0%, 100% { transform: scaleY(1); opacity: 0.8; }
+            50% { transform: scaleY(1.1); opacity: 1; }
+        }
+        
+        .na-bar {
+            width: 100%; border-radius: 2px 2px 0 0;
+            background: var(--color-stroke-strong);
+            transform-origin: bottom;
+            transition: height 1s ease;
+            position: relative;
+        }
+        
+        .na-bar.gold {
+            background: linear-gradient(to top, rgba(251, 191, 36, 0.2), var(--color-gold));
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+            /* The Magic: Make them breathe randomly */
+            animation: breathe 4s infinite ease-in-out;
+        }
+        /* Randomize animations for organic feel */
+        .na-bar.gold:nth-child(odd) { animation-duration: 3.2s; animation-delay: 0.2s; }
+        .na-bar.gold:nth-child(even) { animation-duration: 4.5s; animation-delay: 0.5s; }
+
+        /* 3. "Focus Mode" on Search */
+        .na-search { position: relative; width: 320px; transition: width 0.3s var(--ease-elastic); }
+        .na-search-input {
+            width: 100%; background: var(--color-paper-2); border: 1px solid var(--color-stroke);
+            padding: 10px 12px 10px 36px; border-radius: 8px; color: white; outline: none;
+            transition: all 0.2s;
+        }
+        
+        /* The Dimming Effect */
+        body:has(.na-search-input:focus) .na-content,
+        body:has(.na-search-input:focus) .na-sidebar {
+            filter: blur(4px) brightness(0.4);
+            pointer-events: none; /* Block clicks when focused */
+        }
+        body:has(.na-search-input:focus) .na-header {
+            background: transparent; border-bottom-color: transparent;
+        }
+        .na-search:focus-within {
+            transform: scale(1.1); z-index: 50; width: 480px;
+        }
+        .na-search-input:focus {
+            background: black; border-color: var(--color-gold);
+            box-shadow: 0 0 0 4px var(--color-gold-dim), 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        /* 4. "Typing" Data (Monospace) */
+        .na-tabular { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+        .na-data-large { font-family: "Playfair Display", serif; font-size: 36px; line-height: 1; }
+
+        /* =========================================
+           5. UTILITY CLASSES
+           ========================================= */
+        .na-grid { display: grid; gap: 24px; }
+        .na-grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .na-grid-2-1 { grid-template-columns: 2fr 1fr; }
+        .na-stack { display: flex; flex-direction: column; gap: 16px; }
+
+        /* Buttons with "Press" depth */
+        .na-btn {
+            height: 36px; padding: 0 16px; border-radius: 6px; font-size: 13px; font-weight: 500;
+            border: 1px solid var(--color-stroke); background: var(--color-paper-2); color: var(--color-lux);
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+            transition: all 0.1s;
+        }
+        .na-btn:active { transform: translateY(1px); }
+        .na-btn-primary { 
+            background: var(--color-gold); color: black; border-color: transparent; font-weight: 600; 
+        }
+        .na-btn-primary:hover { 
+            background: #f59e0b; box-shadow: 0 0 12px rgba(251, 191, 36, 0.4); 
+        }
+
+        /* Badges & Status */
+        .na-chip { 
+            font-size: 10px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(255,255,255,0.05); color: var(--color-clay); font-weight: 600;
+        }
+        .na-status { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+        .na-status::before { content:""; width:6px; height:6px; border-radius:50%; }
+        .na-status.ok { color: var(--color-success); } .na-status.ok::before { background: var(--color-success); box-shadow: 0 0 8px var(--color-success); }
+        .na-status.warn { color: var(--color-gold); } .na-status.warn::before { background: var(--color-gold); box-shadow: 0 0 8px var(--color-gold); }
+
+        /* Chart Container */
+        .na-chart-container {
+            height: 160px; display: flex; align-items: flex-end; gap: 4px; padding-top: 24px;
+            /* Scanline effect over chart */
+            background: linear-gradient(transparent 50%, rgba(0,0,0,0.2) 50%);
+            background-size: 100% 4px;
+        }
+
+        /* Typography */
+        .na-nav-item { padding: 8px 12px; border-radius: 6px; display: flex; justify-content: space-between; color: var(--color-clay); text-decoration: none; font-size: 14px; transition: 0.2s; }
+        .na-nav-item:hover { color: var(--color-lux); background: var(--color-paper-2); }
+        .na-nav-item.is-active { color: var(--color-gold); background: rgba(251, 191, 36, 0.05); border: 1px solid rgba(251, 191, 36, 0.1); }
+        .na-h1 { font-size: 20px; font-weight: 600; margin: 0; letter-spacing: -0.02em; }
+        .na-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-clay); font-weight: 600; display: block; margin-bottom: 8px; }
+
+        /* Tables */
+        .na-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .na-table th { text-align: left; padding: 12px 16px; color: var(--color-clay); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--color-stroke); }
+        .na-table td { padding: 12px 16px; border-bottom: 1px solid var(--color-stroke-soft); color: var(--color-lux); }
+        .na-table tr:hover td { background: var(--color-paper-2); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--color-void); }
+        ::-webkit-scrollbar-thumb { background: var(--color-stroke); border-radius: 4px; }
+        
+        /* Modal Target (CSS Only) */
+        .na-modal {
+            position: fixed; inset: 0; z-index: 100;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+            display: grid; place-items: center; opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .na-modal:target { opacity: 1; pointer-events: auto; }
+        .na-modal-panel {
+            background: var(--color-paper); border: 1px solid var(--color-stroke);
+            padding: 32px; width: 500px; border-radius: 16px;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 60px black;
+            transform: scale(0.9); transition: 0.4s var(--ease-elastic);
+        }
+        .na-modal:target .na-modal-panel { transform: scale(1); }
+
+    </style>
+</head>
+
+<body>
+    <div class="na-bg-grain"></div>
+
+    <div class="na-shell">
+        <aside class="na-sidebar">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 32px;">
+                <div style="width: 32px; height: 32px; background: var(--color-gold); color: black; font-weight: 800; border-radius: 6px; display: grid; place-items: center;">Æ</div>
+                <div>
+                    <div style="font-weight: 600; color: white;">Nexus Æther</div>
+                    <div style="font-size: 11px; color: var(--color-clay);">Kinetic Console v4.0</div>
+                </div>
+            </div>
+
+            <nav class="na-stack" style="gap: 4px;">
+                <div class="na-label" style="margin-top: 16px;">Control Plane</div>
+                <a href="#" class="na-nav-item is-active">
+                    <span>Dashboard</span>
+                    <span style="font-size: 10px;">LIVE</span>
+                </a>
+                <a href="#" class="na-nav-item">Mesh Topology</a>
+                <a href="#" class="na-nav-item">Routing Policies</a>
+                
+                <div class="na-label" style="margin-top: 24px;">Intelligence</div>
+                <a href="#" class="na-nav-item">Predictive Edge</a>
+                <a href="#" class="na-nav-item" style="justify-content: space-between;">
+                    Anomalies <span class="na-chip" style="color: var(--color-gold); border-color: rgba(251,191,36,0.2);">2</span>
+                </a>
+                <a href="#" class="na-nav-item">Experiments</a>
+            </nav>
+
+            <div style="margin-top: auto;">
+                <div class="na-card" style="padding: 12px; background: rgba(255,255,255,0.03);">
+                    <div class="na-label">System Status</div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
+                        <span class="na-status ok">Operational</span>
+                        <span style="font-size: 11px; color: var(--color-clay); margin-left: auto;">99.99%</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="na-main">
+            <header class="na-header">
+                <div class="na-search">
+                    <span style="position: absolute; left: 12px; top: 10px; color: var(--color-clay);">⌕</span>
+                    <input class="na-search-input" type="text" placeholder="Search nodes, routes, or trace IDs...">
+                </div>
+
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <a href="#modal-deploy" class="na-btn na-btn-primary">Deploy</a>
+                    <button class="na-btn" style="width: 36px; padding: 0; justify-content: center;">⚙</button>
+                    <div style="width: 32px; height: 32px; background: var(--color-stroke); border-radius: 50%;"></div>
+                </div>
+            </header>
+
+            <div style="padding: 32px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
+                    <div>
+                        <div class="na-label" style="color: var(--color-gold);">Global Pulse</div>
+                        <h1 class="na-h1" style="font-size: 28px;">Network Overview</h1>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <span class="na-chip">Last updated: Live</span>
+                    </div>
+                </div>
+
+                <div class="na-grid na-grid-3" style="margin-bottom: 32px;">
+                    <div class="na-card na-card-interactive">
+                        <div class="na-label">Global Latency (p95)</div>
+                        <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 8px;">
+                            <span class="na-data-large">14</span>
+                            <span style="font-size: 14px; color: var(--color-clay);">ms</span>
+                            <span class="na-chip" style="color: var(--color-success); margin-left: auto;">▼ 12%</span>
+                        </div>
+                        <div style="height: 4px; background: var(--color-stroke); margin-top: 16px; border-radius: 2px; overflow: hidden;">
+                            <div style="width: 40%; height: 100%; background: var(--color-success);"></div>
+                        </div>
+                    </div>
+
+                    <div class="na-card na-card-interactive">
+                        <div class="na-label">AI Inference Hits</div>
+                        <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 8px;">
+                            <span class="na-data-large">4.2</span>
+                            <span style="font-size: 14px; color: var(--color-clay);">B</span>
+                            <span class="na-chip" style="color: var(--color-success); margin-left: auto;">▲ 8.4%</span>
+                        </div>
+                        <div style="height: 4px; background: var(--color-stroke); margin-top: 16px; border-radius: 2px; overflow: hidden;">
+                            <div style="width: 85%; height: 100%; background: var(--color-gold);"></div>
+                        </div>
+                    </div>
+
+                    <div class="na-card na-card-interactive">
+                        <div class="na-label">Active Nodes</div>
+                        <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 8px;">
+                            <span class="na-data-large">892</span>
+                            <span class="na-chip" style="color: var(--color-gold); margin-left: auto;">3 Maint</span>
+                        </div>
+                        <div style="height: 4px; background: var(--color-stroke); margin-top: 16px; border-radius: 2px; overflow: hidden;">
+                            <div style="width: 92%; height: 100%; background: var(--color-lux);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="na-grid na-grid-2-1">
+                    <div class="na-card">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div>
+                                <div class="na-label">Traffic Evolution</div>
+                                <h3 style="font-size: 16px; font-weight: 500;">Edge Compute vs. Static Origin</h3>
+                            </div>
+                            <div class="na-stack" style="gap: 4px; text-align: right;">
+                                <div class="na-chip" style="align-self: flex-end;">Live Window</div>
+                                <div class="na-tabular" style="font-size: 12px; color: var(--color-gold);">14:00 — 14:45</div>
+                            </div>
+                        </div>
+
+                        <div class="na-chart-container">
+                            <div class="na-bar" style="height: 30%"></div>
+                            <div class="na-bar" style="height: 40%"></div>
+                            <div class="na-bar" style="height: 35%"></div>
+                            <div class="na-bar" style="height: 50%"></div>
+                            <div class="na-bar gold" style="height: 65%"></div>
+                            <div class="na-bar gold" style="height: 85%"></div>
+                            <div class="na-bar gold" style="height: 75%"></div>
+                            <div class="na-bar gold" style="height: 95%"></div>
+                            <div class="na-bar gold" style="height: 80%"></div>
+                            <div class="na-bar" style="height: 60%"></div>
+                            <div class="na-bar" style="height: 40%"></div>
+                            <div class="na-bar" style="height: 20%"></div>
+                        </div>
+                    </div>
+
+                    <div class="na-card" style="background: var(--color-paper-2);">
+                        <div class="na-label">Pending Decision</div>
+                        <h3 style="margin: 8px 0 16px; font-weight: 500;">Routing Policy #8821</h3>
+                        <p style="font-size: 13px; color: var(--color-clay); line-height: 1.5; margin-bottom: 24px;">
+                            Shift 25% of traffic from US-EAST to EU-CENTRAL. Predicted latency improvement: <strong>12ms</strong>.
+                        </p>
+                        <div class="na-stack">
+                            <button class="na-btn na-btn-primary" style="justify-content: center;">Approve Shift</button>
+                            <button class="na-btn" style="justify-content: center;">Reject</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="na-card" style="margin-top: 24px; padding: 0;">
+                    <div style="padding: 16px 24px; border-bottom: 1px solid var(--color-stroke); display: flex; justify-content: space-between;">
+                        <span class="na-label">High Velocity Nodes</span>
+                        <div style="display: flex; gap: 12px; font-size: 12px; color: var(--color-clay);">
+                            <span>Sort: <span style="color: white;">Impact</span></span>
+                            <span>Filter: <span style="color: white;">All</span></span>
+                        </div>
+                    </div>
+                    <table class="na-table">
+                        <thead>
+                            <tr>
+                                <th>Node ID</th>
+                                <th>Region</th>
+                                <th>Throughput</th>
+                                <th>Latency</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="na-tabular" style="font-weight: 500;">HK-091</td>
+                                <td>Hong Kong</td>
+                                <td class="na-tabular">840 GB/s</td>
+                                <td class="na-tabular" style="color: var(--color-success);">4ms</td>
+                                <td><span class="na-status ok">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td class="na-tabular" style="font-weight: 500;">SG-221</td>
+                                <td>Singapore</td>
+                                <td class="na-tabular">1.2 TB/s</td>
+                                <td class="na-tabular" style="color: var(--color-success);">8ms</td>
+                                <td><span class="na-status ok">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td class="na-tabular" style="font-weight: 500;">VN-HCM</td>
+                                <td>Ho Chi Minh</td>
+                                <td class="na-tabular">410 GB/s</td>
+                                <td class="na-tabular" style="color: var(--color-gold);">24ms</td>
+                                <td><span class="na-status warn">Rerouting</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="modal-deploy" class="na-modal">
+        <div class="na-modal-panel">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 24px;">
+                <div>
+                    <div class="na-label" style="color: var(--color-gold);">Production</div>
+                    <h2 class="na-h1">Deploy Configuration</h2>
+                </div>
+                <a href="#" style="text-decoration: none; font-size: 24px; color: var(--color-clay);">&times;</a>
+            </div>
+            
+            <div style="margin-bottom: 24px;">
+                <label class="na-label">Change Log</label>
+                <input type="text" value="feat(routing): enable predictive prefetch v2" 
+                    style="width: 100%; background: var(--color-void); border: 1px solid var(--color-stroke); padding: 12px; border-radius: 8px; color: white; font-family: 'JetBrains Mono', monospace; font-size: 13px; outline: none;">
+            </div>
+
+            <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                <div style="color: var(--color-gold); font-size: 13px; font-weight: 600; margin-bottom: 8px;">⚠️ Impact Analysis</div>
+                <p style="font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.8); margin: 0;">
+                    This will trigger a cache purge for <strong>128 nodes</strong>.
+                </p>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                <a href="#" class="na-btn">Cancel</a>
+                <a href="#" class="na-btn na-btn-primary">Confirm Deploy</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cards = document.querySelectorAll('.na-card');
+        cards.forEach(card => {
+            card.onmousemove = e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--x', `${x}px`);
+                card.style.setProperty('--y', `${y}px`);
+            }
+        });
+    </script>
+</body>
+</html>

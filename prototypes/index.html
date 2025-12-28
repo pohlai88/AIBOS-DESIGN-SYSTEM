@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neo-Analog // System Launcher</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* =================================================================
+           THE LAUNCHER PHYSICS
+           A "Game Menu" aesthetic for enterprise software.
+           ================================================================= */
+        :root {
+            --bg-void: #050505;
+            --bg-card: #0a0a0b;
+            --bg-hover: #121214;
+            --border: #27272a;
+            --border-hi: #3f3f46;
+            --accent: #eab308;
+            --text-main: #f4f4f5;
+            --text-dim: #a1a1aa;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0; padding: 0;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05), transparent 70%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        /* --- HEADER --- */
+        .launcher-head {
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 24px;
+            display: flex; justify-content: space-between; align-items: end;
+        }
+        .brand { font-size: 24px; font-weight: 700; letter-spacing: -0.03em; display: flex; align-items: center; gap: 12px; }
+        .mark { 
+            width: 32px; height: 32px; background: var(--accent); 
+            border-radius: 6px; box-shadow: 0 0 16px rgba(234, 179, 8, 0.4);
+            display: grid; place-items: center; color: black; font-weight: 900; font-size: 16px;
+        }
+        .version { font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; background: var(--bg-hover); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border); }
+
+        /* --- SECTION HEADERS --- */
+        .section-label {
+            font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em;
+            color: var(--accent); margin-bottom: 24px; font-weight: 600;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .section-label::after {
+            content: ""; height: 1px; flex: 1; background: var(--border);
+        }
+
+        /* --- THE TRILOGY GRID (Hero Cards) --- */
+        .trilogy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .hero-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s;
+            display: flex; flex-direction: column;
+            height: 240px;
+        }
+
+        /* Filament Hover Effect */
+        .hero-card::before {
+            content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0; transition: 0.3s;
+        }
+        .hero-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-hi);
+            background: var(--bg-hover);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+        }
+        .hero-card:hover::before { opacity: 1; }
+
+        .hero-icon { font-size: 24px; margin-bottom: 16px; }
+        .hero-title { font-size: 20px; font-weight: 600; margin: 0 0 8px 0; color: white; }
+        .hero-desc { font-size: 14px; color: var(--text-dim); line-height: 1.5; margin: 0; flex: 1; }
+        .hero-meta {
+            margin-top: auto; display: flex; align-items: center; justify-content: space-between;
+            font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text-dim);
+            border-top: 1px solid var(--border); padding-top: 16px;
+        }
+        
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; box-shadow: 0 0 8px #34d399; }
+
+        /* --- STANDARD MODULES (Compact Grid) --- */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .module-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .module-card:hover {
+            background: var(--bg-hover);
+            border-color: var(--text-dim);
+        }
+        .mod-left { display: flex; flex-direction: column; gap: 4px; }
+        .mod-name { font-size: 14px; font-weight: 500; color: white; }
+        .mod-tag { font-size: 11px; color: var(--text-dim); }
+        .mod-arrow { color: var(--border-hi); transition: 0.2s; }
+        .module-card:hover .mod-arrow { color: var(--accent); transform: translateX(2px); }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <header class="launcher-head">
+        <div class="brand">
+            <div class="mark">NA</div>
+            <div>
+                <div>NEO-ANALOG</div>
+                <div style="font-size: 13px; font-weight: 400; color: var(--text-dim);">Design System v2.0</div>
+            </div>
+        </div>
+        <div class="version">BUILD 2025.01.27</div>
+    </header>
+
+    <div class="section-label">The Trilogy (Beast Mode)</div>
+    <div class="trilogy-grid">
+        
+        <a href="prototype-dashboard-nextgen.html" class="hero-card">
+            <div class="hero-icon">🎛️</div>
+            <h2 class="hero-title">The Console</h2>
+            <p class="hero-desc">Executive Command Center. Features breathing data visualization, focus modes, and cinematic lighting effects.</p>
+            <div class="hero-meta">
+                <span>DASHBOARD-NEXTGEN</span>
+                <div style="display:flex; align-items:center; gap:8px;">Live <div class="status-dot"></div></div>
+            </div>
+        </a>
+
+        <a href="omni-erp-integrated.html" class="hero-card">
+            <div class="hero-icon">⚡</div>
+            <h2 class="hero-title">OMNI OS</h2>
+            <p class="hero-desc">High-Frequency ERP. Instant view switching (Grid/Kanban/Gantt) via CSS logic. Zero-latency architecture.</p>
+            <div class="hero-meta">
+                <span>OMNI-ERP-INTEGRATED</span>
+                <div style="display:flex; align-items:center; gap:8px;">Stable <div class="status-dot"></div></div>
+            </div>
+        </a>
+
+        <a href="prototype-aegis-threat-map.html" class="hero-card">
+            <div class="hero-icon">🛡️</div>
+            <h2 class="hero-title">Project AEGIS</h2>
+            <p class="hero-desc">Cybersecurity Threat Map. Pure CSS visualization engine using offset-path and grid topology. No WebGL required.</p>
+            <div class="hero-meta">
+                <span>AEGIS-THREAT-MAP</span>
+                <div style="display:flex; align-items:center; gap:8px;">Active <div class="status-dot"></div></div>
+            </div>
+        </a>
+
+    </div>
+
+    <div class="section-label">Standard Modules</div>
+    <div class="module-grid">
+        
+        <a href="prototype-ui-kit.html" class="module-card">
+            <div class="mod-left">
+                <span class="mod-name">UI Kit Reference</span>
+                <span class="mod-tag">prototype-ui-kit.html</span>
+            </div>
+            <div class="mod-arrow">→</div>
+        </a>
+
+        <a href="prototype-erp-god-mode.html" class="module-card">
+            <div class="mod-left">
+                <span class="mod-name">ERP God Mode</span>
+                <span class="mod-tag">prototype-erp-god-mode.html</span>
+            </div>
+            <div class="mod-arrow">→</div>
+        </a>
+
+        <a href="prototype-data-lineage.html" class="module-card">
+            <div class="mod-left">
+                <span class="mod-name">Data Lineage</span>
+                <span class="mod-tag">prototype-data-lineage.html</span>
+            </div>
+            <div class="mod-arrow">→</div>
+        </a>
+
+        <a href="prototype-ide-dashboard.html" class="module-card">
+            <div class="mod-left">
+                <span class="mod-name">IDE Dashboard</span>
+                <span class="mod-tag">prototype-ide-dashboard.html</span>
+            </div>
+            <div class="mod-arrow">→</div>
+        </a>
+
+        <a href="prototype-supabase-erp.html" class="module-card">
+            <div class="mod-left">
+                <span class="mod-name">Supabase ERP</span>
+                <span class="mod-tag">prototype-supabase-erp.html</span>
+            </div>
+            <div class="mod-arrow">→</div>
+        </a>
+
+    </div>
+
+    <footer style="margin-top: 80px; border-top: 1px solid var(--border); padding-top: 24px; text-align: center; color: var(--text-dim); font-size: 11px;">
+        <p>NEO-ANALOG DESIGN SYSTEM v2.0 • 100% PURE CSS/HTML • ZERO DEPENDENCIES</p>
+    </footer>
+
+</div>
+
+</body>
+</html>

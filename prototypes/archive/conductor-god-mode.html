@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NÆXUS // GOD VIEW</title>
+    
+    <style>
+        /* =================================================================
+           LEVEL 6: THE PHYSICS ENGINE (Global Reset)
+           ================================================================= */
+        :root {
+            /* DIMENSIONS (The Spacetime) */
+            --h-head: 56px;
+            --h-foot: 32px;
+            --w-rail: 280px;
+            --w-insp: 360px;
+            --h-cell: 36px; /* Ultra-dense */
+
+            /* PALETTE (The Void) */
+            --c-void: #030304;       /* Deepest Black */
+            --c-panel: #0a0a0b;      /* Surface */
+            --c-surface: #121214;    /* Elevated */
+            --c-border: #1f1f22;     /* Subtle division */
+            --c-border-hi: #2e2e32;  /* Hover division */
+            
+            /* SIGNALS (The Light) */
+            --c-lux: #ededef;        /* Primary Text */
+            --c-dim: #71717a;        /* Muted Text */
+            --c-gold: #fbbf24;       /* Warning/Focus */
+            --c-cyan: #22d3ee;       /* Data/Active */
+            --c-crim: #f43f5e;       /* Critical */
+            --c-emerald: #34d399;    /* Stable */
+
+            /* Z-INDICES (The Stratosphere) */
+            --z-floor: 1;
+            --z-sticky: 10;
+            --z-corner: 20;
+            --z-hud: 50;
+            --z-modal: 100;
+        }
+
+        * { box-sizing: border-box; outline: none; }
+        ::selection { background: var(--c-gold); color: black; }
+        
+        body { 
+            margin: 0; padding: 0; 
+            background: var(--c-void); 
+            color: var(--c-lux);
+            font-family: 'JetBrains Mono', 'Menlo', monospace; /* Monospace is the language of God View */
+            font-size: 12px;
+            overflow: hidden; /* No browser scrollbar ever */
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- THE SCROLLBARS (Integrated) --- */
+        ::-webkit-scrollbar { width: 10px; height: 10px; background: var(--c-void); }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--c-border-hi); 
+            border: 2px solid var(--c-void); 
+            border-radius: 5px; 
+        }
+        ::-webkit-scrollbar-corner { background: var(--c-void); }
+
+        /* =================================================================
+           LEVEL 5: THE HYPER-GRID SHELL
+           ================================================================= */
+        .nx-shell {
+            display: grid;
+            grid-template-areas: 
+                "head head head"
+                "rail main insp"
+                "foot foot foot";
+            grid-template-columns: var(--w-rail) 1fr var(--w-insp);
+            grid-template-rows: var(--h-head) 1fr var(--h-foot);
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* --- REGION: HUD HEADER --- */
+        .nx-head {
+            grid-area: head;
+            background: rgba(5, 5, 6, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--c-border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px;
+            z-index: var(--z-hud);
+        }
+
+        .nx-logo-block { display: flex; align-items: center; gap: 12px; }
+        .nx-mark {
+            width: 24px; height: 24px; background: var(--c-gold); 
+            color: black; font-weight: 900; font-size: 14px;
+            display: grid; place-items: center; border-radius: 4px;
+        }
+
+        /* The "Ticker" - CSS Animation */
+        .nx-ticker {
+            display: flex; gap: 24px; color: var(--c-dim); font-size: 11px;
+            overflow: hidden; mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+        }
+        .nx-ticker-item { display: flex; gap: 6px; }
+        .val-up { color: var(--c-emerald); }
+        .val-down { color: var(--c-crim); }
+
+        /* --- REGION: NEURAL RAIL --- */
+        .nx-rail {
+            grid-area: rail;
+            background: var(--c-panel);
+            border-right: 1px solid var(--c-border);
+            display: flex; flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* The Search Field */
+        .nx-search-box {
+            padding: 12px; border-bottom: 1px solid var(--c-border);
+        }
+        .nx-input {
+            width: 100%; background: var(--c-surface); border: 1px solid var(--c-border);
+            color: var(--c-lux); padding: 6px 10px; border-radius: 4px;
+            font-family: inherit; font-size: 11px;
+            transition: all 0.2s;
+        }
+        .nx-input:focus { border-color: var(--c-gold); box-shadow: 0 0 0 1px var(--c-gold); }
+
+        /* The Infinite Tree */
+        .nx-tree { overflow-y: auto; flex: 1; padding: 12px 0; }
+        
+        .nx-tree details {
+            padding-left: 14px; /* Indent */
+            position: relative;
+        }
+        /* Vertical Line */
+        .nx-tree details::before {
+            content: ""; position: absolute; left: 6px; top: 0; bottom: 0;
+            width: 1px; background: var(--c-border);
+        }
+        /* Root exception */
+        .nx-tree > details::before { display: none; }
+        .nx-tree > details { padding-left: 0; }
+
+        .nx-tree summary {
+            padding: 6px 12px; cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            color: var(--c-dim); font-size: 11px;
+            position: relative; z-index: 2;
+            transition: 0.1s;
+        }
+        .nx-tree summary:hover { color: var(--c-lux); background: var(--c-surface); }
+        .nx-tree summary::-webkit-details-marker { display: none; }
+        
+        /* Connector Hook */
+        .nx-tree details > summary::before {
+            content: ""; position: absolute; left: -8px; top: 50%;
+            width: 8px; height: 1px; background: var(--c-border);
+        }
+        .nx-tree > details > summary::before { display: none; }
+
+        /* Status LEDs in Tree */
+        .led { width: 4px; height: 4px; border-radius: 50%; background: var(--c-dim); box-shadow: 0 0 4px var(--c-dim); }
+        .led.on { background: var(--c-emerald); box-shadow: 0 0 6px var(--c-emerald); }
+        .led.warn { background: var(--c-gold); box-shadow: 0 0 6px var(--c-gold); }
+        .led.err { background: var(--c-crim); box-shadow: 0 0 6px var(--c-crim); }
+
+        /* --- REGION: QUANTUM GRID (Main) --- */
+        .nx-main {
+            grid-area: main;
+            background: var(--c-void);
+            overflow: auto;
+            position: relative;
+        }
+
+        .nx-table {
+            width: max-content; min-width: 100%;
+            border-collapse: separate; border-spacing: 0;
+        }
+
+        /* The Grid Physics */
+        .nx-table th, .nx-table td {
+            height: var(--h-cell); padding: 0 12px;
+            border-right: 1px solid var(--c-border);
+            border-bottom: 1px solid var(--c-border);
+            white-space: nowrap; font-size: 11px;
+            background: var(--c-void); /* Solid backing for sticky */
+        }
+
+        /* Sticky Header */
+        .nx-table thead th {
+            position: sticky; top: 0; z-index: var(--z-sticky);
+            background: var(--c-panel);
+            font-weight: 700; color: var(--c-dim);
+            text-transform: uppercase; letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--c-border-hi);
+        }
+
+        /* Sticky First Column */
+        .nx-table th:first-child, .nx-table td:first-child {
+            position: sticky; left: 0; z-index: var(--z-sticky);
+            border-right: 2px solid var(--c-border); /* Stronger division */
+            background: var(--c-void);
+            font-weight: 700; color: var(--c-cyan);
+        }
+        /* Sticky Header First Column (The Corner) */
+        .nx-table thead th:first-child {
+            z-index: var(--z-corner);
+            background: var(--c-panel);
+        }
+
+        /* Hover Row Effect (Subtle) */
+        .nx-table tr:hover td { background: var(--c-surface); }
+
+        /* --- VISUALIZATIONS (Pure CSS) --- */
+        
+        /* 1. Sparkline (Bar) */
+        .viz-bar {
+            width: 60px; height: 12px; background: var(--c-surface);
+            position: relative; overflow: hidden; border-radius: 2px;
+        }
+        .viz-bar-fill {
+            height: 100%; width: var(--p);
+            background: linear-gradient(90deg, var(--c-cyan), #06b6d4);
+        }
+
+        /* 2. Heatmap Cell */
+        .viz-heat {
+            /* Opacity derived from --p variable */
+            background-color: color-mix(in srgb, var(--c-crim) var(--p), transparent);
+            border-radius: 2px; padding: 2px 6px;
+        }
+
+        /* 3. Status Pill */
+        .nx-pill {
+            padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; text-transform: uppercase;
+            border: 1px solid transparent;
+        }
+        .nx-pill.ok { border-color: rgba(52, 211, 153, 0.3); color: var(--c-emerald); background: rgba(52, 211, 153, 0.1); }
+        .nx-pill.warn { border-color: rgba(251, 191, 36, 0.3); color: var(--c-gold); background: rgba(251, 191, 36, 0.1); }
+
+        /* --- REGION: INSPECTOR (BI Engine) --- */
+        .nx-insp {
+            grid-area: insp;
+            background: var(--c-panel);
+            border-left: 1px solid var(--c-border);
+            display: flex; flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .nx-insp-header {
+            padding: 16px; border-bottom: 1px solid var(--c-border);
+        }
+        
+        /* The CSS Radar/Gantt */
+        .nx-gantt-grid {
+            display: grid; grid-template-columns: repeat(24, 1fr); gap: 1px;
+            background: var(--c-border); margin-top: 12px;
+            border: 1px solid var(--c-border);
+        }
+        .gantt-seg { height: 16px; background: var(--c-surface); }
+        .gantt-seg.active { background: var(--c-gold); opacity: 0.8; box-shadow: 0 0 8px rgba(251, 191, 36, 0.3); }
+
+        /* --- REGION: FOOTER (System Status) --- */
+        .nx-foot {
+            grid-area: foot;
+            background: var(--c-surface);
+            border-top: 1px solid var(--c-border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px;
+            font-size: 10px; color: var(--c-dim);
+        }
+
+        /* --- OVERLAY: COMMAND PALETTE (Cmd+K) --- */
+        .nx-command-overlay {
+            position: fixed; inset: 0; z-index: var(--z-modal);
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+            display: grid; place-items: center;
+            opacity: 0; pointer-events: none; transition: 0.2s;
+        }
+        .nx-command-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .nx-command-box {
+            width: 600px; background: var(--c-panel);
+            border: 1px solid var(--c-border-hi);
+            box-shadow: 0 20px 50px -10px rgba(0,0,0,0.8), 0 0 0 1px var(--c-border-hi);
+            border-radius: 8px; overflow: hidden;
+            transform: scale(0.95); transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nx-command-overlay.open .nx-command-box { transform: scale(1); }
+
+        .cmd-input {
+            width: 100%; background: transparent; border: none; padding: 16px;
+            font-size: 16px; color: var(--c-lux); border-bottom: 1px solid var(--c-border);
+        }
+        .cmd-list { padding: 8px; }
+        .cmd-item {
+            padding: 8px 12px; display: flex; justify-content: space-between;
+            color: var(--c-dim); border-radius: 4px; cursor: pointer;
+        }
+        .cmd-item.active { background: var(--c-gold); color: black; }
+        .cmd-key { border: 1px solid currentColor; border-radius: 3px; padding: 1px 4px; font-size: 9px; opacity: 0.6; }
+
+    </style>
+</head>
+<body>
+
+<div class="nx-shell">
+    
+    <header class="nx-head">
+        <div class="nx-logo-block">
+            <div class="nx-mark">N</div>
+            <span style="font-weight: 700; letter-spacing: -0.05em;">AETHELGARD</span>
+            <span style="color: var(--c-dim); font-size: 10px;">// v9.0.4 [GOD_MODE]</span>
+        </div>
+
+        <div class="nx-ticker">
+            <div class="nx-ticker-item"><span>CPU</span> <span class="val-up">12%</span></div>
+            <div class="nx-ticker-item"><span>MEM</span> <span class="val-up">4.2GB</span></div>
+            <div class="nx-ticker-item"><span>NET</span> <span class="val-down">840Mb/s</span></div>
+            <div class="nx-ticker-item"><span>ERR</span> <span style="color:var(--c-lux);">0</span></div>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+            <button class="nx-btn" onclick="toggleCmd()">⌘K</button>
+            <div style="width: 8px; height: 8px; background: var(--c-gold); border-radius: 50%; box-shadow: 0 0 10px var(--c-gold);"></div>
+        </div>
+    </header>
+
+    <aside class="nx-rail">
+        <div class="nx-search-box">
+            <input class="nx-input" placeholder="Filter nodes...">
+        </div>
+        <div class="nx-tree">
+            <details open>
+                <summary><div class="led on"></div> <strong>CLUSTER-ALPHA</strong></summary>
+                
+                <details open>
+                    <summary>primary_shard_01</summary>
+                    <details><summary>tbl_users_raw</summary></details>
+                    <details><summary>tbl_events_stream</summary></details>
+                </details>
+
+                <details>
+                    <summary>replica_shard_02</summary>
+                    <details><summary>tbl_audit_logs</summary></details>
+                </details>
+            </details>
+
+            <details>
+                <summary><div class="led warn"></div> <strong>CLUSTER-BETA</strong></summary>
+                <details open>
+                    <summary>analytics_engine</summary>
+                    <details><summary style="color: var(--c-gold);">! job_batch_fail</summary></details>
+                </details>
+            </details>
+
+            <details>
+                <summary><div class="led err"></div> <strong>CLUSTER-GAMMA</strong></summary>
+                <summary style="padding-left: 28px; color: var(--c-crim);">Connection Refused</summary>
+            </details>
+        </div>
+    </aside>
+
+    <main class="nx-main">
+        <table class="nx-table">
+            <thead>
+                <tr>
+                    <th style="width: 140px;">Trace ID</th>
+                    <th style="width: 120px;">Timestamp</th>
+                    <th>Node Origin</th>
+                    <th>Load (%)</th>
+                    <th>Latency (ms)</th>
+                    <th>Risk Factor</th>
+                    <th>Payload Hash</th>
+                    <th>Throughput</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="grid-body">
+                </tbody>
+        </table>
+    </main>
+
+    <aside class="nx-insp">
+        <div class="nx-insp-header">
+            <div style="color: var(--c-dim); font-size: 10px; text-transform: uppercase;">Active Selection</div>
+            <h2 style="margin: 4px 0; font-size: 16px;">TRACE-9921-X</h2>
+            <div class="nx-pill ok">AUTHENTICATED</div>
+        </div>
+
+        <div style="padding: 16px;">
+            <div style="margin-bottom: 4px; color: var(--c-dim); font-size: 10px;">EXECUTION TIMELINE</div>
+            <div class="nx-gantt-grid">
+                <div class="gantt-seg"></div><div class="gantt-seg active"></div><div class="gantt-seg active"></div><div class="gantt-seg"></div>
+                <div class="gantt-seg"></div><div class="gantt-seg"></div><div class="gantt-seg active"></div><div class="gantt-seg active"></div>
+                <div class="gantt-seg active"></div><div class="gantt-seg"></div><div class="gantt-seg"></div><div class="gantt-seg"></div>
+                <div class="gantt-seg"></div><div class="gantt-seg active"></div><div class="gantt-seg"></div><div class="gantt-seg"></div>
+                <div class="gantt-seg"></div><div class="gantt-seg"></div><div class="gantt-seg"></div><div class="gantt-seg active"></div>
+                <div class="gantt-seg"></div><div class="gantt-seg active"></div><div class="gantt-seg active"></div><div class="gantt-seg"></div>
+            </div>
+            <div style="display:flex; justify-content: space-between; margin-top: 4px; color: var(--c-dim); font-size: 9px;">
+                <span>0ms</span><span>50ms</span><span>100ms</span>
+            </div>
+        </div>
+
+        <div style="padding: 16px; border-top: 1px solid var(--c-border);">
+            <div style="margin-bottom: 8px; color: var(--c-dim); font-size: 10px;">METADATA</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div style="background: var(--c-surface); padding: 8px; border-radius: 4px;">
+                    <div style="color: var(--c-dim); font-size: 9px;">CLIENT</div>
+                    <div style="color: var(--c-lux);">Apex_Financial</div>
+                </div>
+                <div style="background: var(--c-surface); padding: 8px; border-radius: 4px;">
+                    <div style="color: var(--c-dim); font-size: 9px;">PROTOCOL</div>
+                    <div style="color: var(--c-cyan);">gRPC/v2</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <footer class="nx-foot">
+        <div style="display: flex; gap: 16px;">
+            <span>SOCKET: <span style="color: var(--c-emerald);">CONNECTED</span></span>
+            <span>LATENCY: 14ms</span>
+        </div>
+        <div>
+            <span>BUFFER: 92%</span>
+        </div>
+    </footer>
+
+</div>
+
+<div class="nx-command-overlay" id="cmd-overlay">
+    <div class="nx-command-box">
+        <input class="cmd-input" placeholder="Type a command..." id="cmd-input">
+        <div class="cmd-list">
+            <div class="cmd-item active">
+                <span>Jump to Namespace...</span>
+                <span class="cmd-key">↵</span>
+            </div>
+            <div class="cmd-item">
+                <span>Export Current View (CSV)</span>
+                <span class="cmd-key">⌘E</span>
+            </div>
+            <div class="cmd-item">
+                <span>Reset Layout</span>
+                <span class="cmd-key">⌘R</span>
+            </div>
+            <div class="cmd-item" style="color: var(--c-crim);">
+                <span>Terminate Cluster...</span>
+                <span class="cmd-key">Del</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Generate High-Density Grid Data
+    const tbody = document.getElementById('grid-body');
+    const statuses = ['OK', 'OK', 'OK', 'WARN', 'OK', 'CRIT'];
+    
+    function renderGrid() {
+        let html = '';
+        for(let i=0; i<50; i++) {
+            const id = `TRC-${Math.floor(Math.random()*9000)+1000}-X`;
+            const load = Math.floor(Math.random()*100);
+            const latency = Math.floor(Math.random()*200);
+            const risk = Math.floor(Math.random()*100);
+            const status = statuses[Math.floor(Math.random()*statuses.length)];
+            
+            // Heatmap color logic
+            let riskColor = `rgba(52, 211, 153, 0.2)`; // Green
+            if(risk > 50) riskColor = `rgba(251, 191, 36, 0.4)`; // Yellow
+            if(risk > 80) riskColor = `rgba(244, 63, 94, 0.6)`; // Red
+
+            let pillClass = status === 'OK' ? 'ok' : 'warn';
+            if(status === 'CRIT') pillClass = 'warn'; // Simplified for demo
+
+            html += `
+            <tr>
+                <td style="color: var(--c-cyan); font-family: 'JetBrains Mono';">${id}</td>
+                <td style="color: var(--c-dim);">2025-01-27 14:42:${i < 10 ? '0'+i : i}</td>
+                <td>us-east-1a</td>
+                <td>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div class="viz-bar"><div class="viz-bar-fill" style="--p: ${load}%"></div></div>
+                        <span style="font-size: 9px; width: 24px;">${load}%</span>
+                    </div>
+                </td>
+                <td style="text-align:right; font-variant-numeric: tabular-nums;">${latency}ms</td>
+                <td><div class="viz-heat" style="width: 100%; height: 100%; background: ${riskColor}; color:white; text-align:center;">${risk}</div></td>
+                <td style="font-family: monospace; color: var(--c-dim);">0x${Math.floor(Math.random()*16777215).toString(16)}...</td>
+                <td style="text-align:right;">${(Math.random()*10).toFixed(2)} MB/s</td>
+                <td><span class="nx-pill ${pillClass}">${status}</span></td>
+            </tr>
+            `;
+        }
+        tbody.innerHTML = html;
+    }
+
+    renderGrid();
+
+    // 2. Command Palette Logic
+    const overlay = document.getElementById('cmd-overlay');
+    const input = document.getElementById('cmd-input');
+
+    function toggleCmd() {
+        const isOpen = overlay.classList.contains('open');
+        if(isOpen) {
+            overlay.classList.remove('open');
+        } else {
+            overlay.classList.add('open');
+            input.focus();
+        }
+    }
+
+    // Keyboard Shortcut (Cmd+K)
+    document.addEventListener('keydown', (e) => {
+        if((e.metaKey || e.ctrlKey) && e.key === 'k') {
+            e.preventDefault();
+            toggleCmd();
+        }
+        if(e.key === 'Escape') {
+            overlay.classList.remove('open');
+        }
+    });
+
+    overlay.addEventListener('click', (e) => {
+        if(e.target === overlay) toggleCmd();
+    });
+
+</script>
+
+</body>
+</html>

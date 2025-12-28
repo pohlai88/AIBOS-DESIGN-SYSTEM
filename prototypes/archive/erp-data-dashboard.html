@@ -1,0 +1,1012 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Neo‑Analog • Next‑Gen ERP Dashboard (CRUD + Kanban + Gantt + Live)</title>
+<style>
+/* =========================================================
+   NEO‑ANALOG • NEXT‑GEN ERP DASHBOARD (Standalone CSS)
+   Goal: Daily ERP use — CRUD-first + Kanban + Gantt + Realtime
+   No Tailwind, no JS. Token-inspired from input.css.
+   ========================================================= */
+
+:root{
+  /* Core palette */
+  --color-void:#09090b;
+  --color-paper:#121214;
+  --color-paper-2:#18181b;
+  --color-paper-hover:#27272a;
+
+  --color-lux:#f4f4f5;
+  --color-lux-dim:#a1a1aa;
+  --color-clay:#71717a;
+
+  --color-stroke:#27272a;
+  --color-stroke-strong:#3f3f46;
+  --color-stroke-soft:#1f1f22;
+
+  --color-gold:#eab308;
+  --color-success:#10b981;
+  --color-warning:#f59e0b;
+  --color-error:#f43f5e;
+  --color-info:#3b82f6;
+
+  --radius-panel:16px;
+  --radius-card:12px;
+  --radius-control:10px;
+
+  --shadow-card: 0 1px 2px -1px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.03) inset;
+  --shadow-lift: 0 18px 46px -26px rgba(0,0,0,0.9);
+
+  --ease-premium:cubic-bezier(0.2,0,0,1);
+  --dur-150:150ms;
+  --dur-250:250ms;
+  --dur-400:400ms;
+
+  /* Density */
+  --h-row:40px;
+  --h-head:56px;
+  --w-rail:280px;
+  --w-insp:380px;
+
+  /* Background knobs */
+  --bg-grain-opacity:0.10;   /* 0.08–0.14 */
+  --bg-fiber-opacity:0.05;   /* 0.03–0.06 */
+  --bg-vignette:0.52;        /* 0.45–0.60 */
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--color-void);
+  color:var(--color-lux);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden; /* app feel */
+}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+:focus-visible{outline:2px solid color-mix(in oklab, var(--color-gold) 75%, white 10%); outline-offset:2px}
+::selection{background:color-mix(in oklab, var(--color-gold) 70%, white 10%); color:var(--color-void)}
+
+/* ---------- Background: studio light + vignette + coarse grain + fiber ---------- */
+.na-bg{
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(1200px 900px at 14% 18%, rgba(255,255,255,0.07), transparent 60%),
+    radial-gradient(1100px 800px at 86% 20%, rgba(255,255,255,0.05), transparent 62%),
+    radial-gradient(1000px 800px at 50% 115%, rgba(0,0,0,var(--bg-vignette)), transparent 58%),
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--color-void) 92%, var(--color-clay) 8%),
+      var(--color-void) 60%,
+      color-mix(in oklab, var(--color-void) 86%, black 14%));
+}
+.na-bg::after{
+  content:""; position:absolute; inset:0;
+  background-image:
+    repeating-linear-gradient(38deg, rgba(255,255,255,1) 0, rgba(255,255,255,1) 0.6px, transparent 0.6px, transparent 9px),
+    repeating-linear-gradient(128deg, rgba(255,255,255,1) 0, rgba(255,255,255,1) 0.6px, transparent 0.6px, transparent 13px),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.52' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size:auto,auto,220px 220px;
+  background-repeat:repeat,repeat,repeat;
+  opacity:calc(var(--bg-grain-opacity) + var(--bg-fiber-opacity));
+  filter:contrast(118%) brightness(92%);
+  mix-blend-mode:soft-light;
+}
+
+/* ---------- Shell layout ---------- */
+.shell{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns: var(--w-rail) 1fr var(--w-insp);
+  grid-template-rows: var(--h-head) 1fr 34px;
+  height:100vh;
+  width:100vw;
+}
+
+/* ---------- Header ---------- */
+.head{
+  grid-column:1 / -1;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:0 16px;
+  border-bottom:1px solid var(--color-stroke);
+  background:rgba(9,9,11,0.72);
+  backdrop-filter: blur(18px);
+}
+.brand{
+  display:flex; align-items:center; gap:12px; min-width:260px;
+}
+.mark{
+  width:28px;height:28px;border-radius:8px;
+  background:color-mix(in oklab, var(--color-gold) 92%, white 8%);
+  color:var(--color-void);
+  display:grid; place-items:center;
+  font-weight:900;
+  box-shadow: 0 0 0 1px rgba(234,179,8,0.18), 0 10px 24px -14px rgba(234,179,8,0.45);
+}
+.brand h1{margin:0;font-size:14px; letter-spacing:-0.01em}
+.meta{color:var(--color-clay); font-size:11px; text-transform:uppercase; letter-spacing:0.12em}
+.search{
+  flex:1;
+  max-width:720px;
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px;
+  border-radius:var(--radius-control);
+  border:1px solid var(--color-stroke);
+  background:rgba(18,18,20,0.65);
+}
+.search input{
+  width:100%;
+  border:none;
+  outline:none;
+  background:transparent;
+  color:var(--color-lux);
+}
+.kbd{
+  font-size:11px;
+  color:var(--color-clay);
+  border:1px solid var(--color-stroke);
+  background:var(--color-paper);
+  border-radius:8px;
+  padding:4px 8px;
+}
+.actions{display:flex; align-items:center; gap:10px}
+.btn{
+  height:34px;
+  border-radius:var(--radius-control);
+  border:1px solid var(--color-stroke);
+  background:rgba(18,18,20,0.75);
+  color:var(--color-lux);
+  padding:0 12px;
+  display:inline-flex; align-items:center; gap:8px;
+  cursor:pointer;
+  transition: transform var(--dur-150) var(--ease-premium), background var(--dur-150) var(--ease-premium), border-color var(--dur-150) var(--ease-premium);
+}
+.btn:hover{background:var(--color-paper-2); border-color:var(--color-stroke-strong); transform: translateY(-1px)}
+.btn-primary{
+  background:color-mix(in oklab, var(--color-paper) 88%, var(--color-gold) 12%);
+  border-color: color-mix(in oklab, var(--color-gold) 35%, var(--color-stroke));
+  box-shadow: 0 0 0 1px rgba(234,179,8,0.10), 0 12px 30px -18px rgba(234,179,8,0.45);
+}
+.btn-primary:hover{background:color-mix(in oklab, var(--color-paper) 82%, var(--color-gold) 18%);}
+
+/* ---------- Rail ---------- */
+.rail{
+  grid-row:2 / 4;
+  border-right:1px solid var(--color-stroke);
+  background:rgba(18,18,20,0.72);
+  backdrop-filter: blur(14px);
+  overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.rail-top{padding:14px 14px 10px; border-bottom:1px solid var(--color-stroke)}
+.rail-top .meta{margin-bottom:10px}
+.rail input{
+  width:100%;
+  height:34px;
+  border-radius:var(--radius-control);
+  border:1px solid var(--color-stroke);
+  background:rgba(9,9,11,0.5);
+  color:var(--color-lux);
+  padding:0 12px;
+}
+.nav{
+  padding:10px;
+  overflow:auto;
+}
+.nav::-webkit-scrollbar{width:10px;height:10px}
+.nav::-webkit-scrollbar-thumb{background:rgba(228,228,231,0.16); border-radius:999px; border:2px solid transparent; background-clip:padding-box}
+.nav::-webkit-scrollbar-track{background:transparent}
+.nav a{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 10px;
+  border-radius:12px;
+  border:1px solid transparent;
+  color:var(--color-lux-dim);
+  transition: background var(--dur-150) var(--ease-premium), border-color var(--dur-150) var(--ease-premium), color var(--dur-150) var(--ease-premium);
+}
+.nav a:hover{background:rgba(39,39,42,0.55); border-color:rgba(63,63,70,0.45); color:var(--color-lux)}
+.nav a.active{
+  background: color-mix(in oklab, var(--color-paper) 92%, var(--color-gold) 8%);
+  border-color: color-mix(in oklab, var(--color-gold) 22%, var(--color-stroke));
+  color:var(--color-lux);
+}
+.pill{
+  height:20px; min-width:20px; padding:0 8px;
+  border-radius:999px;
+  border:1px solid var(--color-stroke);
+  background:rgba(18,18,20,0.55);
+  color:var(--color-clay);
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:11px;
+}
+.pill.live{border-color:rgba(16,185,129,0.35); color:color-mix(in oklab, var(--color-success) 85%, var(--color-lux) 15%)}
+.pill.warn{border-color:rgba(245,158,11,0.35); color:color-mix(in oklab, var(--color-warning) 85%, var(--color-lux) 15%)}
+
+/* ---------- Main ---------- */
+.main{
+  grid-row:2 / 3;
+  overflow:auto;
+  padding:16px;
+}
+.main::-webkit-scrollbar{width:10px;height:10px}
+.main::-webkit-scrollbar-thumb{background:rgba(228,228,231,0.16); border-radius:999px; border:2px solid transparent; background-clip:padding-box}
+.main::-webkit-scrollbar-track{background:transparent}
+
+.grid{
+  display:grid;
+  grid-template-columns: 1.1fr 1.4fr;
+  gap:16px;
+  align-items:start;
+}
+.section-title{
+  display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
+  margin-bottom:10px;
+}
+.section-title h2{
+  margin:0;
+  font-size:14px;
+  letter-spacing:-0.01em;
+}
+.section-title .meta{font-size:10px}
+
+/* Cards */
+.card{
+  border-radius:var(--radius-card);
+  border:1px solid var(--color-stroke);
+  background:rgba(18,18,20,0.72);
+  box-shadow: var(--shadow-card);
+}
+.card .hd{
+  padding:12px 12px 10px;
+  border-bottom:1px solid rgba(39,39,42,0.65);
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.card .bd{padding:12px}
+.kpis{
+  display:grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap:10px;
+}
+.kpi{
+  border-radius:14px;
+  border:1px solid rgba(39,39,42,0.75);
+  background: rgba(24,24,27,0.55);
+  padding:10px 10px 12px;
+}
+.kpi .v{
+  font-size:18px;
+  letter-spacing:-0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.kpi .s{color:var(--color-lux-dim); font-size:12px}
+.kpi .m{margin-top:6px; color:var(--color-clay); font-size:10px; text-transform:uppercase; letter-spacing:0.12em}
+
+.ticker{
+  display:flex; gap:18px;
+  overflow:hidden;
+  mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+}
+.ticker-track{
+  display:flex; gap:18px;
+  animation: ticker 18s linear infinite;
+}
+@keyframes ticker{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-50%)}
+}
+.t-item{display:flex; gap:8px; align-items:baseline; color:var(--color-lux-dim); font-size:11px}
+.t-item b{color:var(--color-lux); font-weight:700}
+.up{color:color-mix(in oklab, var(--color-success) 80%, var(--color-lux) 20%)}
+.down{color:color-mix(in oklab, var(--color-error) 80%, var(--color-lux) 20%)}
+
+/* Tabs */
+.tabs{display:flex; gap:6px; align-items:center}
+.tab{
+  height:30px; padding:0 10px;
+  border-radius:999px;
+  border:1px solid var(--color-stroke);
+  background:rgba(18,18,20,0.55);
+  color:var(--color-lux-dim);
+  display:inline-flex; align-items:center;
+  cursor:pointer;
+  transition: all var(--dur-150) var(--ease-premium);
+}
+.tab:hover{background:var(--color-paper-2); color:var(--color-lux); border-color:var(--color-stroke-strong)}
+.tab[aria-selected="true"]{
+  background: color-mix(in oklab, var(--color-paper) 92%, var(--color-gold) 8%);
+  border-color: color-mix(in oklab, var(--color-gold) 25%, var(--color-stroke));
+  color:var(--color-lux);
+  box-shadow: 0 0 0 1px rgba(234,179,8,0.10);
+}
+
+/* Kanban */
+.kanban{
+  display:grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap:10px;
+}
+.klane{
+  border-radius:14px;
+  border:1px solid rgba(39,39,42,0.75);
+  background:rgba(24,24,27,0.45);
+  overflow:hidden;
+}
+.klane .lh{
+  padding:10px 10px;
+  border-bottom:1px solid rgba(39,39,42,0.65);
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:11px;
+  color:var(--color-lux-dim);
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+}
+.kcards{padding:10px; display:flex; flex-direction:column; gap:8px}
+.kcard{
+  border-radius:12px;
+  border:1px solid rgba(39,39,42,0.75);
+  background:rgba(18,18,20,0.68);
+  padding:10px 10px 10px;
+  transition: transform var(--dur-150) var(--ease-premium), border-color var(--dur-150) var(--ease-premium), background var(--dur-150) var(--ease-premium);
+}
+.kcard:hover{transform: translateY(-1px); border-color:rgba(63,63,70,0.65); background:rgba(24,24,27,0.78)}
+.kcard .t{font-size:13px; margin:0 0 6px}
+.kcard .sub{display:flex; justify-content:space-between; gap:8px; color:var(--color-clay); font-size:11px}
+.badge{
+  height:18px; padding:0 8px;
+  border-radius:999px;
+  border:1px solid rgba(39,39,42,0.9);
+  background:rgba(18,18,20,0.65);
+  color:var(--color-lux-dim);
+  display:inline-flex; align-items:center;
+  font-size:11px;
+}
+.badge.g{border-color:rgba(16,185,129,0.35); color:color-mix(in oklab, var(--color-success) 85%, var(--color-lux) 15%)}
+.badge.y{border-color:rgba(245,158,11,0.35); color:color-mix(in oklab, var(--color-warning) 85%, var(--color-lux) 15%)}
+.badge.r{border-color:rgba(244,63,94,0.35); color:color-mix(in oklab, var(--color-error) 85%, var(--color-lux) 15%)}
+
+/* Gantt */
+.gantt{
+  display:grid;
+  gap:8px;
+}
+.g-head{
+  display:grid;
+  grid-template-columns: 180px repeat(12, 1fr);
+  gap:2px;
+  color:var(--color-clay);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+}
+.g-head div{padding:6px 8px}
+.g-row{
+  display:grid;
+  grid-template-columns: 180px repeat(12, 1fr);
+  gap:2px;
+  align-items:center;
+}
+.g-task{
+  padding:8px 8px;
+  border-radius:10px;
+  border:1px solid rgba(39,39,42,0.75);
+  background:rgba(18,18,20,0.65);
+  color:var(--color-lux-dim);
+  font-size:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.g-track{
+  grid-column: 2 / -1;
+  display:grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap:2px;
+  padding:2px;
+  border-radius:10px;
+  background:rgba(39,39,42,0.45);
+  border:1px solid rgba(39,39,42,0.75);
+}
+.g-bar{
+  height:10px;
+  border-radius:6px;
+  grid-column: var(--start) / span var(--span);
+  background: color-mix(in oklab, var(--color-gold) 65%, var(--color-info));
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.35) inset;
+}
+.g-bar.ok{background: color-mix(in oklab, var(--color-success) 70%, var(--color-info))}
+.g-bar.risk{background: color-mix(in oklab, var(--color-warning) 74%, var(--color-gold))}
+.g-bar.crit{background: color-mix(in oklab, var(--color-error) 70%, var(--color-gold))}
+
+/* Data Grid */
+.table-wrap{
+  border-radius:var(--radius-card);
+  border:1px solid var(--color-stroke);
+  overflow:hidden;
+  background:rgba(18,18,20,0.72);
+}
+.table-tools{
+  padding:10px 12px;
+  border-bottom:1px solid rgba(39,39,42,0.65);
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.tool-left{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.tool-right{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.select{
+  height:32px;
+  border-radius:var(--radius-control);
+  border:1px solid var(--color-stroke);
+  background:rgba(9,9,11,0.45);
+  color:var(--color-lux);
+  padding:0 10px;
+}
+.table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  font-size:13px;
+}
+.table thead th{
+  position:sticky; top:0; z-index:2;
+  background:rgba(24,24,27,0.92);
+  backdrop-filter: blur(10px);
+  text-align:left;
+  color:var(--color-clay);
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  height:42px;
+  padding:0 12px;
+  border-bottom:1px solid rgba(63,63,70,0.55);
+}
+.table tbody td{
+  height:var(--h-row);
+  padding:0 12px;
+  border-bottom:1px solid rgba(39,39,42,0.65);
+  color:var(--color-lux);
+  white-space:nowrap;
+}
+.table tbody tr:hover td{
+  background:rgba(39,39,42,0.38);
+}
+.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "JetBrains Mono", "Courier New", monospace; font-variant-numeric: tabular-nums}
+.row-actions{display:flex; gap:8px; align-items:center}
+.iconbtn{
+  width:30px; height:30px;
+  border-radius:10px;
+  border:1px solid rgba(39,39,42,0.75);
+  background:rgba(18,18,20,0.6);
+  color:var(--color-lux-dim);
+  display:grid; place-items:center;
+  cursor:pointer;
+  transition: all var(--dur-150) var(--ease-premium);
+}
+.iconbtn:hover{background:rgba(24,24,27,0.85); border-color:rgba(63,63,70,0.8); color:var(--color-lux)}
+.dot{width:7px;height:7px;border-radius:50%}
+.dot.g{background:var(--color-success); box-shadow:0 0 10px rgba(16,185,129,0.35)}
+.dot.y{background:var(--color-warning); box-shadow:0 0 10px rgba(245,158,11,0.35)}
+.dot.r{background:var(--color-error); box-shadow:0 0 10px rgba(244,63,94,0.35)}
+
+/* Inspector (CRUD) */
+.insp{
+  grid-row:2 / 4;
+  border-left:1px solid var(--color-stroke);
+  background:rgba(18,18,20,0.72);
+  backdrop-filter: blur(14px);
+  overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.insp-head{
+  padding:14px 14px 10px;
+  border-bottom:1px solid var(--color-stroke);
+  display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+}
+.hgroup h3{margin:0; font-size:14px; letter-spacing:-0.01em}
+.hgroup .meta{margin-top:4px}
+.insp-body{padding:14px; overflow:auto}
+.insp-body::-webkit-scrollbar{width:10px;height:10px}
+.insp-body::-webkit-scrollbar-thumb{background:rgba(228,228,231,0.16); border-radius:999px; border:2px solid transparent; background-clip:padding-box}
+.insp-body::-webkit-scrollbar-track{background:transparent}
+
+.field{margin-bottom:12px}
+label{display:block; margin-bottom:6px; color:var(--color-clay); font-size:11px; text-transform:uppercase; letter-spacing:0.12em}
+.input, textarea{
+  width:100%;
+  height:36px;
+  border-radius:var(--radius-control);
+  border:1px solid var(--color-stroke);
+  background:rgba(9,9,11,0.45);
+  color:var(--color-lux);
+  padding:0 12px;
+}
+textarea{height:auto; padding:10px 12px; min-height:92px; resize:vertical}
+.help{color:var(--color-clay); font-size:11px; margin-top:6px}
+.hr{height:1px;background:rgba(39,39,42,0.65); margin:14px 0}
+.split{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+.footer{
+  grid-column:2 / 3;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 16px;
+  border-top:1px solid var(--color-stroke);
+  color:var(--color-clay);
+  font-size:11px;
+  background:rgba(9,9,11,0.72);
+  backdrop-filter: blur(16px);
+}
+.led{
+  display:inline-flex; align-items:center; gap:8px;
+}
+.led i{width:7px;height:7px;border-radius:50%; background:var(--color-success); box-shadow:0 0 10px rgba(16,185,129,0.35)}
+.small{font-size:11px;color:var(--color-clay)}
+.right-actions{display:flex; gap:8px; align-items:center}
+.danger{border-color:rgba(244,63,94,0.28)}
+.danger:hover{border-color:rgba(244,63,94,0.45)}
+</style>
+</head>
+<body>
+<div class="na-bg" aria-hidden="true"></div>
+
+<div class="shell" role="application" aria-label="Neo‑Analog Next‑Gen ERP Dashboard">
+  <!-- Header -->
+  <header class="head">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">NA</div>
+      <div>
+        <h1>Next‑Gen ERP Dashboard</h1>
+        <div class="meta">Daily Ops • CRUD‑first • Realtime • Boards • Timeline</div>
+      </div>
+    </div>
+
+    <div class="search" role="search" aria-label="Global search">
+      <input type="search" placeholder="Search vendors, invoices, GRN, PO, approvals, journal…"/>
+      <span class="kbd" aria-hidden="true">⌘K</span>
+    </div>
+
+    <div class="actions">
+      <button class="btn" type="button">Filters</button>
+      <button class="btn" type="button">Export</button>
+      <a class="btn btn-primary" href="#new" role="button" aria-label="Create new record">＋ New</a>
+    </div>
+  </header>
+
+  <!-- Rail -->
+  <aside class="rail" aria-label="Primary navigation">
+    <div class="rail-top">
+      <div class="meta">Workspaces</div>
+      <input type="text" placeholder="Jump to module…"/>
+    </div>
+    <nav class="nav">
+      <a class="active" href="#"><span>Operations Dashboard</span><span class="pill live">LIVE</span></a>
+      <a href="#"><span>Approval Queue</span><span class="pill">12</span></a>
+      <a href="#"><span>3‑Way Match</span><span class="pill warn">8</span></a>
+      <a href="#"><span>SOA Reconciliation</span><span class="pill">5</span></a>
+      <a href="#"><span>Payment Tracker</span><span class="pill">22</span></a>
+      <a href="#"><span>Vendor Master</span><span class="pill">A‑01</span></a>
+      <a href="#"><span>Client Master</span><span class="pill">C‑01</span></a>
+      <a href="#"><span>Audit Trail</span><span class="pill">∞</span></a>
+      <a href="#"><span>Data Lineage</span><span class="pill">LIN</span></a>
+      <a href="#"><span>System Health</span><span class="pill">OK</span></a>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="main" id="main">
+    <!-- Live KPI + Ticker -->
+    <section class="card" aria-label="Realtime overview">
+      <div class="hd">
+        <div>
+          <div class="meta">Realtime stream</div>
+          <div class="small">WebSocket → approvals • matching • payments • sync • anomalies</div>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Dashboard modes">
+          <button class="tab" aria-selected="true" type="button">Dashboard</button>
+          <button class="tab" aria-selected="false" type="button">Kanban</button>
+          <button class="tab" aria-selected="false" type="button">Gantt</button>
+          <button class="tab" aria-selected="false" type="button">Console</button>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="kpis" role="list">
+          <div class="kpi" role="listitem">
+            <div class="m">Approvals</div>
+            <div class="v">12</div>
+            <div class="s">pending today</div>
+          </div>
+          <div class="kpi" role="listitem">
+            <div class="m">3‑Way Match</div>
+            <div class="v">8</div>
+            <div class="s">needs evidence</div>
+          </div>
+          <div class="kpi" role="listitem">
+            <div class="m">Payments</div>
+            <div class="v mono">RM 184,220</div>
+            <div class="s">scheduled</div>
+          </div>
+          <div class="kpi" role="listitem">
+            <div class="m">Risk</div>
+            <div class="v">3</div>
+            <div class="s">alerts</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px; padding-top:10px; border-top:1px solid rgba(39,39,42,0.65)">
+          <div class="ticker" aria-label="Live ticker">
+            <div class="ticker-track" aria-hidden="true">
+              <div class="t-item"><span class="dot g" aria-hidden="true"></span><b>INV‑24091</b><span>approved</span><span class="up">+1</span></div>
+              <div class="t-item"><span class="dot y" aria-hidden="true"></span><b>GRN‑11920</b><span>variance</span><span class="down">‑0.8%</span></div>
+              <div class="t-item"><span class="dot g" aria-hidden="true"></span><b>PAY‑8841</b><span>released</span><span class="up">RM 12,900</span></div>
+              <div class="t-item"><span class="dot r" aria-hidden="true"></span><b>SOA‑AUG</b><span>mismatch</span><span class="down">3 lines</span></div>
+              <div class="t-item"><span class="dot g" aria-hidden="true"></span><b>VND‑332</b><span>KYB ok</span><span class="up">pass</span></div>
+              <div class="t-item"><span class="dot y" aria-hidden="true"></span><b>PO‑55320</b><span>late</span><span class="down">2d</span></div>
+
+              <!-- repeat to loop -->
+              <div class="t-item"><span class="dot g" aria-hidden="true"></span><b>INV‑24091</b><span>approved</span><span class="up">+1</span></div>
+              <div class="t-item"><span class="dot y" aria-hidden="true"></span><b>GRN‑11920</b><span>variance</span><span class="down">‑0.8%</span></div>
+              <div class="t-item"><span class="dot g" aria-hidden="true"></span><b>PAY‑8841</b><span>released</span><span class="up">RM 12,900</span></div>
+              <div class="t-item"><span class="dot r" aria-hidden="true"></span><b>SOA‑AUG</b><span>mismatch</span><span class="down">3 lines</span></div>
+              <div class="t-item"><span class="dot g" aria-hidden="true"></span><b>VND‑332</b><span>KYB ok</span><span class="up">pass</span></div>
+              <div class="t-item"><span class="dot y" aria-hidden="true"></span><b>PO‑55320</b><span>late</span><span class="down">2d</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div style="height:16px"></div>
+
+    <!-- Combined board + timeline + grid -->
+    <div class="grid">
+      <!-- Left column: Kanban + Gantt -->
+      <div style="display:grid; gap:16px">
+        <section class="card" aria-label="Kanban board">
+          <div class="hd">
+            <div>
+              <div class="meta">Kanban</div>
+              <div class="small">Daily execution — approvals & exceptions</div>
+            </div>
+            <div class="tabs" aria-label="Board filters">
+              <button class="tab" aria-selected="true" type="button">All</button>
+              <button class="tab" aria-selected="false" type="button">AP</button>
+              <button class="tab" aria-selected="false" type="button">AR</button>
+              <button class="tab" aria-selected="false" type="button">Ops</button>
+            </div>
+          </div>
+          <div class="bd">
+            <div class="kanban">
+              <div class="klane">
+                <div class="lh"><span>Inbox</span><span class="pill">6</span></div>
+                <div class="kcards">
+                  <div class="kcard">
+                    <p class="t">New Vendor: De Heus</p>
+                    <div class="sub"><span class="badge y">KYB</span><span class="mono">VND‑441</span></div>
+                  </div>
+                  <div class="kcard">
+                    <p class="t">Invoice Upload: INV‑24102</p>
+                    <div class="sub"><span class="badge">Docs</span><span class="mono">RM 28,900</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="klane">
+                <div class="lh"><span>Review</span><span class="pill warn">3</span></div>
+                <div class="kcards">
+                  <div class="kcard">
+                    <p class="t">3‑Way Match Variance</p>
+                    <div class="sub"><span class="badge y">GRN</span><span class="mono">‑0.8%</span></div>
+                  </div>
+                  <div class="kcard">
+                    <p class="t">SOA: Line mismatch</p>
+                    <div class="sub"><span class="badge r">Risk</span><span class="mono">3 lines</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="klane">
+                <div class="lh"><span>Approve</span><span class="pill">2</span></div>
+                <div class="kcards">
+                  <div class="kcard">
+                    <p class="t">Payment Batch Release</p>
+                    <div class="sub"><span class="badge g">OK</span><span class="mono">PAY‑8841</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="klane">
+                <div class="lh"><span>Done</span><span class="pill live">LIVE</span></div>
+                <div class="kcards">
+                  <div class="kcard">
+                    <p class="t">INV‑24091 Approved</p>
+                    <div class="sub"><span class="badge g">Pass</span><span class="mono">RM 12,900</span></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <section class="card" aria-label="Gantt timeline">
+          <div class="hd">
+            <div>
+              <div class="meta">Gantt</div>
+              <div class="small">Today’s operational timeline</div>
+            </div>
+            <div class="tabs" aria-label="Timeline scope">
+              <button class="tab" aria-selected="true" type="button">Day</button>
+              <button class="tab" aria-selected="false" type="button">Week</button>
+              <button class="tab" aria-selected="false" type="button">Month</button>
+            </div>
+          </div>
+          <div class="bd">
+            <div class="gantt">
+              <div class="g-head" aria-hidden="true">
+                <div></div>
+                <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div><div>11</div><div>12</div>
+              </div>
+
+              <div class="g-row">
+                <div class="g-task">AP approvals (batch)</div>
+                <div class="g-track"><div class="g-bar ok" style="--start:2; --span:5"></div></div>
+              </div>
+
+              <div class="g-row">
+                <div class="g-task">3‑Way match exceptions</div>
+                <div class="g-track"><div class="g-bar risk" style="--start:4; --span:4"></div></div>
+              </div>
+
+              <div class="g-row">
+                <div class="g-task">Payment run</div>
+                <div class="g-track"><div class="g-bar" style="--start:7; --span:3"></div></div>
+              </div>
+
+              <div class="g-row">
+                <div class="g-task">SOA reconciliation</div>
+                <div class="g-track"><div class="g-bar crit" style="--start:6; --span:5"></div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right column: Data grid (CRUD source-of-truth) -->
+      <div style="display:grid; gap:16px">
+        <section class="table-wrap" aria-label="CRUD data grid">
+          <div class="table-tools">
+            <div class="tool-left">
+              <span class="meta">Data grid</span>
+              <select class="select" aria-label="Entity">
+                <option>Invoices</option>
+                <option>Purchase Orders</option>
+                <option>Goods Receive Notes</option>
+                <option>Vendors</option>
+                <option>Payments</option>
+              </select>
+              <select class="select" aria-label="View">
+                <option>Today</option>
+                <option>This week</option>
+                <option>Open items</option>
+                <option>Exceptions</option>
+              </select>
+            </div>
+            <div class="tool-right">
+              <button class="btn" type="button">Bulk</button>
+              <button class="btn" type="button">Columns</button>
+              <a class="btn btn-primary" href="#new" role="button">Create</a>
+            </div>
+          </div>
+
+          <div style="max-height: 420px; overflow:auto">
+            <table class="table" role="table" aria-label="Invoices">
+              <thead>
+                <tr>
+                  <th>State</th>
+                  <th>Invoice</th>
+                  <th>Vendor</th>
+                  <th class="mono">Amount</th>
+                  <th>Match</th>
+                  <th>Due</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="dot g" aria-label="ok"></span></td>
+                  <td class="mono">INV‑24091</td>
+                  <td>Greenfeed</td>
+                  <td class="mono">RM 12,900</td>
+                  <td><span class="badge g">PASS</span></td>
+                  <td class="mono">2025‑12‑29</td>
+                  <td>
+                    <div class="row-actions">
+                      <a class="iconbtn" href="#edit" title="Edit">✎</a>
+                      <a class="iconbtn" href="#view" title="Inspect">⌁</a>
+                      <a class="iconbtn danger" href="#delete" title="Soft delete">⌫</a>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="dot y" aria-label="warn"></span></td>
+                  <td class="mono">INV‑24102</td>
+                  <td>ANT</td>
+                  <td class="mono">RM 28,900</td>
+                  <td><span class="badge y">EVIDENCE</span></td>
+                  <td class="mono">2026‑01‑03</td>
+                  <td>
+                    <div class="row-actions">
+                      <a class="iconbtn" href="#edit" title="Edit">✎</a>
+                      <a class="iconbtn" href="#view" title="Inspect">⌁</a>
+                      <a class="iconbtn danger" href="#delete" title="Soft delete">⌫</a>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="dot r" aria-label="error"></span></td>
+                  <td class="mono">INV‑24107</td>
+                  <td>De Heus</td>
+                  <td class="mono">RM 41,120</td>
+                  <td><span class="badge r">MISMATCH</span></td>
+                  <td class="mono">2025‑12‑28</td>
+                  <td>
+                    <div class="row-actions">
+                      <a class="iconbtn" href="#edit" title="Edit">✎</a>
+                      <a class="iconbtn" href="#view" title="Inspect">⌁</a>
+                      <a class="iconbtn danger" href="#delete" title="Soft delete">⌫</a>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="dot g" aria-label="ok"></span></td>
+                  <td class="mono">INV‑24111</td>
+                  <td>Japfa</td>
+                  <td class="mono">RM 9,480</td>
+                  <td><span class="badge">PENDING</span></td>
+                  <td class="mono">2026‑01‑05</td>
+                  <td>
+                    <div class="row-actions">
+                      <a class="iconbtn" href="#edit" title="Edit">✎</a>
+                      <a class="iconbtn" href="#view" title="Inspect">⌁</a>
+                      <a class="iconbtn danger" href="#delete" title="Soft delete">⌫</a>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-tools" style="border-top:1px solid rgba(39,39,42,0.65); border-bottom:none">
+            <div class="small">Showing <b style="color:var(--color-lux)">1–4</b> of <b style="color:var(--color-lux)">128</b> • Sort: Due date • View: Exceptions</div>
+            <div class="tool-right">
+              <button class="btn" type="button" aria-label="Previous page">Prev</button>
+              <button class="btn" type="button" aria-label="Next page">Next</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" aria-label="Activity stream">
+          <div class="hd">
+            <div>
+              <div class="meta">Audit stream</div>
+              <div class="small">Every decision emits events — traceable & explainable</div>
+            </div>
+            <button class="btn" type="button">Open Log</button>
+          </div>
+          <div class="bd">
+            <div class="small"><span class="dot g" aria-hidden="true"></span> INV‑24091 approved by Andy • 10:42</div>
+            <div class="small" style="margin-top:8px"><span class="dot y" aria-hidden="true"></span> INV‑24102 needs evidence • 10:18</div>
+            <div class="small" style="margin-top:8px"><span class="dot r" aria-hidden="true"></span> INV‑24107 mismatch flagged • 09:55</div>
+            <div class="small" style="margin-top:8px"><span class="dot g" aria-hidden="true"></span> PAY‑8841 released • 09:21</div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Inspector -->
+  <aside class="insp" aria-label="CRUD inspector">
+    <div class="insp-head">
+      <div class="hgroup">
+        <h3>Record Inspector</h3>
+        <div class="meta">Create • Read • Update • Soft Delete</div>
+      </div>
+      <div class="row-actions">
+        <a class="iconbtn" href="#view" title="Read">⌁</a>
+        <a class="iconbtn" href="#edit" title="Update">✎</a>
+        <a class="iconbtn danger" href="#delete" title="Soft delete">⌫</a>
+      </div>
+    </div>
+
+    <div class="insp-body">
+      <div class="meta">Edit invoice</div>
+      <div class="small">Workflow: Update(enum) → Approve / Reject / Withdraw / Cancel</div>
+
+      <div class="hr"></div>
+
+      <div class="split">
+        <div class="field">
+          <label>Invoice No</label>
+          <input class="input mono" value="INV‑24102"/>
+          <div class="help">Immutable key (suggest lock after posting)</div>
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select class="input">
+            <option>requested</option>
+            <option selected>uploaded</option>
+            <option>accepted</option>
+            <option>rejected</option>
+            <option>cancelled</option>
+          </select>
+          <div class="help">Enum only — prevents workflow drift</div>
+        </div>
+      </div>
+
+      <div class="split">
+        <div class="field">
+          <label>Vendor</label>
+          <input class="input" value="ANT"/>
+        </div>
+        <div class="field">
+          <label>Amount</label>
+          <input class="input mono" value="RM 28,900"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Reason / Note</label>
+        <textarea>Evidence required due to delivery date variance. Awaiting POD upload.</textarea>
+        <div class="help">All notes append to audit trail</div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="meta">Update decision</div>
+      <div class="split">
+        <button class="btn btn-primary" type="button">Approve</button>
+        <button class="btn danger" type="button">Reject</button>
+      </div>
+      <div style="height:8px"></div>
+      <div class="split">
+        <button class="btn" type="button">Withdraw</button>
+        <button class="btn" type="button">Cancel</button>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="meta">Attachments</div>
+      <div class="small">PO • GRN • POD • Invoice Copy • Contract • SOA</div>
+      <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
+        <span class="badge">PO</span>
+        <span class="badge y">GRN</span>
+        <span class="badge r">POD</span>
+        <span class="badge">SOA</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="led"><i aria-hidden="true"></i><span>Realtime connected</span><span class="small">p95 42ms</span></div>
+    <div class="right-actions">
+      <span class="small">Tenant: DLB‑MY • Role: Finance Manager • Mode: Shadow + Explain</span>
+    </div>
+  </footer>
+</div>
+
+<!-- CSS-only lightbox targets (no JS). Kept minimal to show flow. -->
+<div id="new" hidden></div>
+<div id="edit" hidden></div>
+<div id="view" hidden></div>
+<div id="delete" hidden></div>
+</body>
+</html>

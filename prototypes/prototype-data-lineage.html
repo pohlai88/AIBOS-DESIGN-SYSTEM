@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neo-Analog Data Terminal — Financial-Grade Data Presentation</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* =========================================================
+           TERMINAL-GRADE DATA PRESENTATION
+           Beyond templates. Beyond React. Pure CSS power.
+           Financial terminal aesthetic: Dense, information-rich, impactful.
+           ========================================================= */
+
+        /* --- Terminal Background Texture --- */
+        .na-bg-grain {
+            background:
+                radial-gradient(1400px 1000px at 12% 15%, rgba(255, 255, 255, var(--opacity-8)), transparent 55%),
+                radial-gradient(1300px 900px at 88% 18%, rgba(255, 255, 255, var(--opacity-5)), transparent 60%),
+                radial-gradient(1200px 850px at 50% 120%, rgba(0, 0, 0, 0.52), transparent 55%),
+                linear-gradient(180deg,
+                    color-mix(in oklab, var(--color-void) 94%, var(--color-clay) 6%),
+                    var(--color-void) 65%,
+                    color-mix(in oklab, var(--color-void) 88%, black 12%));
+        }
+
+        .na-bg-grain::after {
+            background-image:
+                repeating-linear-gradient(38deg, rgba(255, 255, 255, 1) 0, rgba(255, 255, 255, 1) 0.5px, transparent 0.5px, transparent 8px),
+                repeating-linear-gradient(128deg, rgba(255, 255, 255, 1) 0, rgba(255, 255, 255, 1) 0.5px, transparent 0.5px, transparent 12px),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+            background-size: auto, auto, 200px 200px;
+            background-repeat: repeat, repeat, repeat;
+            opacity: 0.12;
+            filter: contrast(120%) brightness(92%);
+            mix-blend-mode: soft-light;
+        }
+
+        /* --- Terminal Density Mode --- */
+        body.na-density-terminal {
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        body.na-density-terminal .na-table {
+            font-size: 12px;
+        }
+
+        body.na-density-terminal .na-td,
+        body.na-density-terminal .na-th {
+            padding: 8px 12px;
+        }
+
+        /* --- Advanced Pagination (Pure CSS) --- */
+        .na-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 0;
+            border-top: 1px solid var(--color-stroke);
+        }
+
+        .na-pagination-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--color-clay);
+            font-size: 12px;
+        }
+
+        .na-pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .na-pagination-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 8px;
+            border: 1px solid var(--color-stroke);
+            background: var(--color-paper);
+            color: var(--color-lux-dim);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.15s var(--ease-premium);
+            text-decoration: none;
+        }
+
+        .na-pagination-btn:hover:not(:disabled) {
+            background: var(--color-paper-2);
+            border-color: var(--color-stroke-strong);
+            color: var(--color-lux);
+        }
+
+        .na-pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .na-pagination-btn.is-active {
+            background: var(--color-gold);
+            border-color: var(--color-gold);
+            color: var(--color-void);
+            font-weight: 600;
+        }
+
+        /* --- Advanced Table Features --- */
+        .na-table-advanced {
+            position: relative;
+        }
+
+        .na-table-advanced .na-th {
+            position: relative;
+            user-select: none;
+        }
+
+        .na-table-advanced .na-th[data-sortable] {
+            cursor: pointer;
+            padding-right: 24px;
+        }
+
+        .na-table-advanced .na-th[data-sortable]:hover {
+            background: var(--color-paper-2);
+        }
+
+        .na-table-advanced .na-th[data-sortable]::after {
+            content: "⇅";
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: var(--color-clay);
+            opacity: 0.5;
+        }
+
+        .na-table-advanced .na-th[data-sort="asc"]::after {
+            content: "↑";
+            opacity: 1;
+            color: var(--color-gold);
+        }
+
+        .na-table-advanced .na-th[data-sort="desc"]::after {
+            content: "↓";
+            opacity: 1;
+            color: var(--color-gold);
+        }
+
+        /* --- Row Selection (Pure CSS) --- */
+        .na-table-advanced .na-tr[data-selectable] {
+            position: relative;
+        }
+
+        .na-table-advanced .na-tr[data-selectable]::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: transparent;
+            transition: background 0.15s var(--ease-premium);
+        }
+
+        .na-table-advanced .na-tr[data-selectable]:has(input[type="checkbox"]:checked)::before {
+            background: var(--color-gold);
+        }
+
+        .na-table-advanced .na-tr[data-selectable]:has(input[type="checkbox"]:checked) {
+            background: color-mix(in oklab, var(--color-paper) 95%, var(--color-gold) 5%);
+        }
+
+        /* --- Inline Editing (CSS-only preview) --- */
+        .na-td[contenteditable="true"] {
+            outline: 2px solid var(--color-gold);
+            outline-offset: -2px;
+            background: var(--color-paper-2);
+            border-radius: 2px;
+        }
+
+        /* --- Advanced Filter Bar --- */
+        .na-filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--color-paper);
+            border: 1px solid var(--color-stroke);
+            border-radius: 4px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .na-filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: var(--color-paper-2);
+            border: 1px solid var(--color-stroke);
+            border-radius: 12px;
+            font-size: 11px;
+            color: var(--color-lux-dim);
+        }
+
+        .na-filter-tag::after {
+            content: "×";
+            cursor: pointer;
+            margin-left: 4px;
+            opacity: 0.6;
+        }
+
+        .na-filter-tag:hover::after {
+            opacity: 1;
+        }
+
+        /* --- Advanced Tooltip (Pure CSS) --- */
+        .na-tooltip-trigger {
+            position: relative;
+            cursor: help;
+        }
+
+        .na-tooltip-trigger::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-8px);
+            padding: 6px 10px;
+            background: var(--color-void);
+            border: 1px solid var(--color-stroke-strong);
+            border-radius: 4px;
+            font-size: 11px;
+            color: var(--color-lux);
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s var(--ease-premium), transform 0.2s var(--ease-premium);
+            z-index: 1000;
+        }
+
+        .na-tooltip-trigger:hover::before {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-12px);
+        }
+
+        /* --- Advanced Status Indicators --- */
+        .na-status-pulse {
+            position: relative;
+        }
+
+        .na-status-pulse::before {
+            content: "";
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.3;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        /* --- Data Density Controls --- */
+        .na-density-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .na-density-btn {
+            padding: 4px 10px;
+            border: 1px solid var(--color-stroke);
+            background: var(--color-paper);
+            color: var(--color-lux-dim);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.15s var(--ease-premium);
+        }
+
+        .na-density-btn:hover {
+            background: var(--color-paper-2);
+            border-color: var(--color-stroke-strong);
+        }
+
+        .na-density-btn.is-active {
+            background: var(--color-gold);
+            border-color: var(--color-gold);
+            color: var(--color-void);
+        }
+
+        /* --- Advanced Lineage Visualization --- */
+        .na-lineage-advanced {
+            position: relative;
+            padding: 24px;
+            background: var(--color-paper);
+            border: 1px solid var(--color-stroke);
+            border-radius: 4px;
+        }
+
+        .na-lineage-node {
+            position: relative;
+            display: inline-block;
+            padding: 8px 14px;
+            background: var(--color-paper-2);
+            border: 1px solid var(--color-stroke);
+            border-radius: 4px;
+            font-size: 11px;
+            color: var(--color-lux-dim);
+            margin: 4px;
+            transition: all 0.2s var(--ease-premium);
+        }
+
+        .na-lineage-node:hover {
+            background: var(--color-paper-hover);
+            border-color: var(--color-stroke-strong);
+            color: var(--color-lux);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .na-lineage-node.is-current {
+            background: var(--color-gold);
+            border-color: var(--color-gold);
+            color: var(--color-void);
+            font-weight: 600;
+        }
+
+        .na-lineage-connection {
+            position: absolute;
+            height: 1px;
+            background: var(--color-stroke);
+            opacity: 0.4;
+        }
+
+        /* --- Advanced Form States --- */
+        .na-form-advanced .na-field {
+            position: relative;
+        }
+
+        .na-form-advanced .na-field[data-state="error"] .na-input {
+            border-color: var(--color-error);
+        }
+
+        .na-form-advanced .na-field[data-state="error"]::after {
+            content: attr(data-error);
+            position: absolute;
+            bottom: -18px;
+            left: 0;
+            font-size: 11px;
+            color: var(--color-error);
+        }
+
+        .na-form-advanced .na-field[data-state="success"] .na-input {
+            border-color: var(--color-success);
+        }
+
+        .na-form-advanced .na-field[data-state="success"]::after {
+            content: "✓";
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-success);
+            font-size: 14px;
+        }
+
+        /* --- Command Palette (CSS-only) --- */
+        .na-command-palette {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            width: 600px;
+            max-width: 90vw;
+            background: var(--color-paper);
+            border: 1px solid var(--color-stroke-strong);
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s var(--ease-premium);
+            z-index: 1000;
+        }
+
+        .na-command-palette:target {
+            opacity: 1;
+            pointer-events: all;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .na-command-palette-input {
+            width: 100%;
+            padding: 16px;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--color-stroke);
+            color: var(--color-lux);
+            font-size: 16px;
+            font-family: var(--font-mono);
+        }
+
+        .na-command-palette-input:focus {
+            outline: none;
+        }
+
+        .na-command-palette-results {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .na-command-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.15s var(--ease-premium);
+        }
+
+        .na-command-item:hover {
+            background: var(--color-paper-2);
+        }
+
+        /* --- Advanced Modal (Enhanced) --- */
+        .na-modal-advanced .na-modal__panel {
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* --- Data Export Preview --- */
+        .na-export-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            padding: 16px;
+            background: var(--color-paper);
+            border: 1px solid var(--color-stroke);
+            border-radius: 4px;
+            margin-top: 16px;
+        }
+
+        .na-export-option {
+            padding: 12px;
+            background: var(--color-paper-2);
+            border: 1px solid var(--color-stroke);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s var(--ease-premium);
+        }
+
+        .na-export-option:hover {
+            background: var(--color-paper-hover);
+            border-color: var(--color-stroke-strong);
+        }
+
+        .na-export-option:has(input:checked) {
+            background: color-mix(in oklab, var(--color-paper-2) 90%, var(--color-gold) 10%);
+            border-color: var(--color-gold);
+        }
+
+        /* --- Real-time Data Updates (CSS Animation) --- */
+        .na-data-updating {
+            animation: dataFlash 0.6s ease-in-out;
+        }
+
+        @keyframes dataFlash {
+
+            0%,
+            100% {
+                background: transparent;
+            }
+
+            50% {
+                background: color-mix(in oklab, var(--color-paper) 85%, var(--color-gold) 15%);
+            }
+        }
+
+        /* --- Advanced Container with Tabs --- */
+        .na-container-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--color-stroke);
+            margin-bottom: 16px;
+        }
+
+        .na-tab {
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            color: var(--color-lux-dim);
+            font-size: 13px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.15s var(--ease-premium);
+        }
+
+        .na-tab:hover {
+            color: var(--color-lux);
+            background: var(--color-paper-2);
+        }
+
+        .na-tab.is-active {
+            color: var(--color-lux);
+            border-bottom-color: var(--color-gold);
+        }
+
+        .na-tab-content {
+            display: none;
+        }
+
+        .na-tab-content.is-active {
+            display: block;
+        }
+
+        /* --- Search Focus Mode (Enhanced) --- */
+        body:has(.na-search-input:focus) .na-content:not(:has(.na-search-input)),
+        body:has(.na-search-input:focus) .na-sidebar {
+            filter: blur(3px) brightness(0.35);
+            pointer-events: none;
+        }
+
+        .na-search:focus-within {
+            transform: scale(1.03);
+            z-index: 50;
+        }
+
+        .na-search-input:focus {
+            background: var(--color-void);
+            border-color: var(--color-gold);
+            box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.2), 0 16px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        /* --- Reduced Motion Support --- */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="na-app na-density-terminal">
+    <a href="#main-content" class="na-skip-link">Skip to main content</a>
+    <div class="na-bg-grain" aria-hidden="true"></div>
+
+    <!-- Command Palette -->
+    <div id="command-palette" class="na-command-palette" role="dialog" aria-label="Command palette">
+        <a href="#" class="na-modal__backdrop" aria-label="Close"></a>
+        <input type="text" class="na-command-palette-input" placeholder="Type a command or search..." autofocus>
+        <div class="na-command-palette-results">
+            <div class="na-command-item">
+                <span>📊</span>
+                <div>
+                    <div class="na-data">Export Data</div>
+                    <div class="na-metadata-small">Export current table to CSV/JSON</div>
+                </div>
+            </div>
+            <div class="na-command-item">
+                <span>🔍</span>
+                <div>
+                    <div class="na-data">Advanced Filter</div>
+                    <div class="na-metadata-small">Open advanced filtering options</div>
+                </div>
+            </div>
+            <div class="na-command-item">
+                <span>⚙️</span>
+                <div>
+                    <div class="na-data">Table Settings</div>
+                    <div class="na-metadata-small">Configure columns and display options</div>
+                </div>
+            </div>
+            <div class="na-command-item">
+                <span>📈</span>
+                <div>
+                    <div class="na-data">View Lineage Graph</div>
+                    <div class="na-metadata-small">Open interactive lineage visualization</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="na-shell">
+        <!-- Sidebar -->
+        <aside class="na-sidebar" aria-label="Main navigation">
+            <div class="na-brand">
+                <div class="na-mark" aria-hidden="true">NA</div>
+                <div class="na-brand-title">Neo-Analog</div>
+                <div class="na-metadata-small">Data Terminal</div>
+            </div>
+
+            <nav class="na-nav" aria-label="Primary navigation">
+                <div class="na-nav-section" role="heading" aria-level="2">Main</div>
+                <a href="#" class="na-nav-item">
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="na-nav-item">
+                    <span>Analytics</span>
+                </a>
+
+                <div class="na-nav-section" role="heading" aria-level="2">Data</div>
+                <a href="#" class="na-nav-item is-active" aria-current="page">
+                    <span>Data Tables</span>
+                    <span class="na-nav-meta">1,247</span>
+                </a>
+                <a href="#" class="na-nav-item is-active" aria-current="page">
+                    <span>Lineage</span>
+                    <span class="na-status ok na-badge-small">8</span>
+                </a>
+                <a href="#" class="na-nav-item is-active" aria-current="page">
+                    <span>Metadata</span>
+                </a>
+                <a href="#" class="na-nav-item">
+                    <span>Quality</span>
+                    <span class="na-status warn na-badge-small">12</span>
+                </a>
+            </nav>
+
+            <div class="na-sidebar-footer">
+                <div class="na-card na-card-compact">
+                    <div class="na-label">Terminal Mode</div>
+                    <div class="na-status-indicator">
+                        <div class="na-status-dot na-status-dot-success na-status-pulse" aria-hidden="true"></div>
+                        <span class="na-mono na-status-text-success">Active</span>
+                    </div>
+                </div>
+                <div class="na-divider na-my-3"></div>
+                <div class="na-muted na-text-sm" style="line-height:1.35;">
+                    Press <kbd
+                        style="padding:2px 6px;background:var(--color-paper-2);border:1px solid var(--color-stroke);border-radius:2px;font-size:10px;">⌘K</kbd>
+                    for commands
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="na-main" id="main-content">
+            <!-- Header -->
+            <header class="na-header">
+                <div class="na-search" role="search">
+                    <label for="search-input-lineage" class="sr-only">Search tables, columns, lineage</label>
+                    <input type="search" id="search-input-lineage" class="na-search-input"
+                        placeholder="Search tables, columns, lineage... (⌘K for commands)"
+                        aria-label="Search tables, columns, lineage">
+                    <span class="na-search-icon" aria-hidden="true">⌕</span>
+                </div>
+                <div class="na-header-actions">
+                    <div class="na-density-controls">
+                        <button class="na-density-btn" aria-label="Compact density">Compact</button>
+                        <button class="na-density-btn is-active" aria-label="Terminal density">Terminal</button>
+                        <button class="na-density-btn" aria-label="Comfort density">Comfort</button>
+                    </div>
+                    <button class="na-btn" aria-label="Filter data">Filter</button>
+                    <button class="na-btn" aria-label="Export data">Export</button>
+                    <a href="#command-palette" class="na-btn-primary" aria-label="Open command palette">Commands</a>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="na-content">
+                <!-- Page Header -->
+                <div class="na-page-header">
+                    <div>
+                        <div class="na-metadata">Data Terminal • v2.4.1 • Terminal Mode Active</div>
+                        <h1 class="na-h1">Data Catalog & Lineage</h1>
+                        <p class="na-metadata na-page-meta">Financial-grade data presentation • Real-time lineage
+                            tracking</p>
+                    </div>
+                    <div class="na-page-actions">
+                        <button class="na-btn" aria-label="Refresh data">Refresh</button>
+                        <button class="na-btn-primary" aria-label="Create new query">+ New Query</button>
+                    </div>
+                </div>
+
+                <!-- Advanced Filter Bar -->
+                <div class="na-filter-bar">
+                    <span class="na-metadata-small">Active filters:</span>
+                    <span class="na-filter-tag">Schema: sales</span>
+                    <span class="na-filter-tag">Quality: > 95%</span>
+                    <span class="na-filter-tag">Status: Active</span>
+                    <span class="na-filter-tag">Rows: > 1M</span>
+                    <a href="#" class="na-metadata-small" style="margin-left:auto;">Clear all</a>
+                </div>
+
+                <!-- Metadata Summary Cards -->
+                <div class="na-grid na-grid-kpi">
+                    <a href="#" class="na-card na-card-interactive" aria-label="Data Sources: 12 active connections">
+                        <div class="na-kpi">
+                            <div class="na-kpi-icon" aria-hidden="true">🔌</div>
+                            <div>
+                                <div class="na-kpi-label">Data Sources</div>
+                                <div class="na-kpi-value na-tabular">12</div>
+                                <div class="na-metadata-small">Active connections</div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="#" class="na-card na-card-interactive" aria-label="Lineage Depth: 8 max dependency levels">
+                        <div class="na-kpi">
+                            <div class="na-kpi-icon" aria-hidden="true">🔗</div>
+                            <div>
+                                <div class="na-kpi-label">Lineage Depth</div>
+                                <div class="na-kpi-value na-tabular">8</div>
+                                <div class="na-metadata-small">Max dependency levels</div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="#" class="na-card na-card-interactive" aria-label="Data Quality: 94.2% average score">
+                        <div class="na-kpi">
+                            <div class="na-kpi-icon" aria-hidden="true">✓</div>
+                            <div>
+                                <div class="na-kpi-label">Data Quality</div>
+                                <div class="na-kpi-value na-tabular">94.2%</div>
+                                <div class="na-metadata-small">Average score</div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="#" class="na-card na-card-interactive" aria-label="PII Fields: 342 tagged and protected">
+                        <div class="na-kpi">
+                            <div class="na-kpi-icon" aria-hidden="true">🔒</div>
+                            <div>
+                                <div class="na-kpi-label">PII Fields</div>
+                                <div class="na-kpi-value na-tabular">342</div>
+                                <div class="na-metadata-small">Tagged & protected</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Advanced Data Table with Container Tabs -->
+                <div class="na-card na-mt-6">
+                    <div class="na-container-tabs">
+                        <button class="na-tab is-active" data-tab="tables">Tables</button>
+                        <button class="na-tab" data-tab="columns">Columns</button>
+                        <button class="na-tab" data-tab="lineage">Lineage</button>
+                        <button class="na-tab" data-tab="quality">Quality</button>
+                    </div>
+
+                    <div class="na-tab-content is-active" id="tables">
+                        <div class="na-panel-head">
+                            <div>
+                                <div class="na-card-title">Data Catalog</div>
+                                <div class="na-card-meta">1,247 tables • 18,934 columns • Terminal view</div>
+                            </div>
+                            <div class="na-flex na-items-center na-gap-2">
+                                <button class="na-btn na-btn-ghost" aria-label="Select all">Select All</button>
+                                <button class="na-btn na-btn-ghost" aria-label="Column settings">Columns</button>
+                            </div>
+                        </div>
+
+                        <div class="na-divider na-my-3_5"></div>
+
+                        <div class="na-table-wrap na-scroll">
+                            <table class="na-table na-table-advanced" role="table" aria-label="Data catalog table">
+                                <thead>
+                                    <tr>
+                                        <th class="na-th" scope="col" style="width:40px;">
+                                            <input type="checkbox" aria-label="Select all rows">
+                                        </th>
+                                        <th class="na-th" scope="col" data-sortable data-sort="asc">Table Name</th>
+                                        <th class="na-th" scope="col" data-sortable>Schema</th>
+                                        <th class="na-th" scope="col" data-sortable>Columns</th>
+                                        <th class="na-th" scope="col" data-sortable>Rows</th>
+                                        <th class="na-th" scope="col" data-sortable>Size</th>
+                                        <th class="na-th" scope="col" data-sortable>Last Modified</th>
+                                        <th class="na-th" scope="col">Lineage</th>
+                                        <th class="na-th" scope="col" data-sortable>Quality</th>
+                                        <th class="na-th" scope="col">Status</th>
+                                        <th class="na-th" scope="col" style="text-align:right;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="na-tr na-tr-interactive" role="row" tabindex="0" data-selectable
+                                        aria-label="customer_transactions table details">
+                                        <td class="na-td">
+                                            <input type="checkbox" aria-label="Select customer_transactions">
+                                        </td>
+                                        <td class="na-td">
+                                            <strong>customer_transactions</strong>
+                                            <div class="na-metadata-small na-td-meta">Primary transaction table</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">sales</span>
+                                            <div class="na-metadata-small na-td-meta">v2.1.0</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data na-tabular">24</span>
+                                            <div class="na-metadata-small na-td-meta">8 indexed</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data na-tabular">12,450,892</span>
+                                            <div class="na-metadata-small na-td-meta">+1,234 today</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">2.4 GB</span>
+                                            <div class="na-metadata-small na-td-meta">Compressed</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">2025-01-27</span>
+                                            <div class="na-metadata-small na-td-meta">14:32:15 UTC</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <div class="na-lineage-badges">
+                                                <span class="na-status ok na-tooltip-trigger"
+                                                    data-tooltip="12 upstream dependencies">12↑</span>
+                                                <span class="na-status pending na-tooltip-trigger"
+                                                    data-tooltip="8 downstream dependencies">8↓</span>
+                                            </div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">96.8%</span>
+                                            <div class="na-metadata-small na-td-meta">3 issues</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-status ok na-status-pulse"
+                                                aria-label="Status: Active">Active</span>
+                                        </td>
+                                        <td class="na-td" style="text-align:right;">
+                                            <button class="na-rowbtn" aria-label="Actions for customer_transactions"
+                                                aria-haspopup="true">⋯</button>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="na-tr na-tr-interactive" role="row" tabindex="0" data-selectable
+                                        aria-label="product_catalog table details">
+                                        <td class="na-td">
+                                            <input type="checkbox" aria-label="Select product_catalog">
+                                        </td>
+                                        <td class="na-td">
+                                            <strong>product_catalog</strong>
+                                            <div class="na-metadata-small na-td-meta">Master product data</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">inventory</span>
+                                            <div class="na-metadata-small na-td-meta">v1.8.2</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data na-tabular">18</span>
+                                            <div class="na-metadata-small na-td-meta">5 indexed</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data na-tabular">45,892</span>
+                                            <div class="na-metadata-small na-td-meta">+12 today</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">892 MB</span>
+                                            <div class="na-metadata-small na-td-meta">Compressed</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">2025-01-27</span>
+                                            <div class="na-metadata-small na-td-meta">12:15:42 UTC</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <div class="na-lineage-badges">
+                                                <span class="na-status ok na-tooltip-trigger"
+                                                    data-tooltip="5 upstream dependencies">5↑</span>
+                                                <span class="na-status pending na-tooltip-trigger"
+                                                    data-tooltip="15 downstream dependencies">15↓</span>
+                                            </div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">98.2%</span>
+                                            <div class="na-metadata-small na-td-meta">1 issue</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-status ok" aria-label="Status: Active">Active</span>
+                                        </td>
+                                        <td class="na-td" style="text-align:right;">
+                                            <button class="na-rowbtn" aria-label="Actions for product_catalog"
+                                                aria-haspopup="true">⋯</button>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="na-tr na-tr-interactive" role="row" tabindex="0" data-selectable
+                                        aria-label="user_profiles table details - PII data">
+                                        <td class="na-td">
+                                            <input type="checkbox" aria-label="Select user_profiles">
+                                        </td>
+                                        <td class="na-td">
+                                            <strong>user_profiles</strong>
+                                            <div class="na-metadata-small na-td-meta">PII: Contains sensitive data</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">users</span>
+                                            <div class="na-metadata-small na-td-meta">v3.0.1</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data na-tabular">32</span>
+                                            <div class="na-metadata-small na-td-meta">12 indexed, 8 PII</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data na-tabular">1,234,567</span>
+                                            <div class="na-metadata-small na-td-meta">+89 today</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">1.8 GB</span>
+                                            <div class="na-metadata-small na-td-meta">Encrypted</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">2025-01-27</span>
+                                            <div class="na-metadata-small na-td-meta">13:45:28 UTC</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <div class="na-lineage-badges">
+                                                <span class="na-status ok na-tooltip-trigger"
+                                                    data-tooltip="3 upstream dependencies">3↑</span>
+                                                <span class="na-status pending na-tooltip-trigger"
+                                                    data-tooltip="22 downstream dependencies">22↓</span>
+                                            </div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">92.4%</span>
+                                            <div class="na-metadata-small na-td-meta">8 issues</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-status pending" aria-label="Status: Syncing">Syncing</span>
+                                        </td>
+                                        <td class="na-td" style="text-align:right;">
+                                            <button class="na-rowbtn" aria-label="Actions for user_profiles"
+                                                aria-haspopup="true">⋯</button>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="na-tr na-tr-interactive" role="row" tabindex="0" data-selectable
+                                        aria-label="financial_reports table details">
+                                        <td class="na-td">
+                                            <input type="checkbox" aria-label="Select financial_reports">
+                                        </td>
+                                        <td class="na-td">
+                                            <strong>financial_reports</strong>
+                                            <div class="na-metadata-small na-td-meta">Aggregated financial data</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">finance</span>
+                                            <div class="na-metadata-small na-td-meta">v2.3.0</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data na-tabular">16</span>
+                                            <div class="na-metadata-small na-td-meta">4 indexed</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data na-tabular">892,345</span>
+                                            <div class="na-metadata-small na-td-meta">+234 today</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">456 MB</span>
+                                            <div class="na-metadata-small na-td-meta">Compressed</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">2025-01-27</span>
+                                            <div class="na-metadata-small na-td-meta">11:22:10 UTC</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <div class="na-lineage-badges">
+                                                <span class="na-status ok na-tooltip-trigger"
+                                                    data-tooltip="8 upstream dependencies">8↑</span>
+                                                <span class="na-status pending na-tooltip-trigger"
+                                                    data-tooltip="6 downstream dependencies">6↓</span>
+                                            </div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">95.6%</span>
+                                            <div class="na-metadata-small na-td-meta">5 issues</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-status ok" aria-label="Status: Active">Active</span>
+                                        </td>
+                                        <td class="na-td" style="text-align:right;">
+                                            <button class="na-rowbtn" aria-label="Actions for financial_reports"
+                                                aria-haspopup="true">⋯</button>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="na-tr na-tr-interactive" role="row" tabindex="0" data-selectable
+                                        aria-label="audit_logs table details">
+                                        <td class="na-td">
+                                            <input type="checkbox" aria-label="Select audit_logs">
+                                        </td>
+                                        <td class="na-td">
+                                            <strong>audit_logs</strong>
+                                            <div class="na-metadata-small na-td-meta">System audit trail</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">system</span>
+                                            <div class="na-metadata-small na-td-meta">v1.0.0</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data na-tabular">12</span>
+                                            <div class="na-metadata-small na-td-meta">2 indexed</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data na-tabular">45,678,901</span>
+                                            <div class="na-metadata-small na-td-meta">+12,345 today</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">8.9 GB</span>
+                                            <div class="na-metadata-small na-td-meta">Archived</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">2025-01-27</span>
+                                            <div class="na-metadata-small na-td-meta">14:30:00 UTC</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <div class="na-lineage-badges">
+                                                <span class="na-status ok na-tooltip-trigger"
+                                                    data-tooltip="0 upstream dependencies">0↑</span>
+                                                <span class="na-status pending na-tooltip-trigger"
+                                                    data-tooltip="4 downstream dependencies">4↓</span>
+                                            </div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">99.1%</span>
+                                            <div class="na-metadata-small na-td-meta">0 issues</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-status ok" aria-label="Status: Active">Active</span>
+                                        </td>
+                                        <td class="na-td" style="text-align:right;">
+                                            <button class="na-rowbtn" aria-label="Actions for audit_logs"
+                                                aria-haspopup="true">⋯</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Advanced Pagination -->
+                        <div class="na-pagination">
+                            <div class="na-pagination-info">
+                                <span>Showing <strong>1-5</strong> of <strong>1,247</strong> tables</span>
+                                <span>•</span>
+                                <span>Page <strong>1</strong> of <strong>250</strong></span>
+                            </div>
+                            <div class="na-pagination-controls">
+                                <button class="na-pagination-btn" disabled aria-label="First page">««</button>
+                                <button class="na-pagination-btn" disabled aria-label="Previous page">«</button>
+                                <button class="na-pagination-btn is-active" aria-label="Page 1">1</button>
+                                <button class="na-pagination-btn" aria-label="Page 2">2</button>
+                                <button class="na-pagination-btn" aria-label="Page 3">3</button>
+                                <span class="na-metadata-small" style="padding:0 8px;">...</span>
+                                <button class="na-pagination-btn" aria-label="Page 250">250</button>
+                                <button class="na-pagination-btn" aria-label="Next page">»</button>
+                                <button class="na-pagination-btn" aria-label="Last page">»»</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="na-tab-content" id="columns">
+                        <div class="na-panel-head">
+                            <div>
+                                <div class="na-card-title">Column Metadata</div>
+                                <div class="na-card-meta">customer_transactions schema • 24 columns</div>
+                            </div>
+                        </div>
+                        <div class="na-divider na-my-3_5"></div>
+                        <div class="na-table-wrap">
+                            <table class="na-table" role="table" aria-label="Column metadata table">
+                                <thead>
+                                    <tr>
+                                        <th class="na-th" scope="col">Column</th>
+                                        <th class="na-th" scope="col">Type</th>
+                                        <th class="na-th" scope="col">Tags</th>
+                                        <th class="na-th" scope="col">Quality</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="na-tr">
+                                        <td class="na-td">
+                                            <strong>transaction_id</strong>
+                                            <div class="na-metadata-small na-td-meta">Primary key</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">UUID</span>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-status ok">PK</span>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">100%</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="na-tr">
+                                        <td class="na-td">
+                                            <strong>customer_id</strong>
+                                            <div class="na-metadata-small na-td-meta">Foreign key</div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">BIGINT</span>
+                                        </td>
+                                        <td class="na-td">
+                                            <div class="na-lineage-badges">
+                                                <span class="na-status ok">FK</span>
+                                                <span class="na-status pending">PII</span>
+                                            </div>
+                                        </td>
+                                        <td class="na-td">
+                                            <span class="na-data">98.2%</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="na-tab-content" id="lineage">
+                        <div class="na-panel-head">
+                            <div>
+                                <div class="na-card-title">Data Lineage Graph</div>
+                                <div class="na-card-meta">customer_transactions dependency tree</div>
+                            </div>
+                            <div class="na-panel-actions">
+                                <button class="na-btn" aria-label="Expand all">Expand All</button>
+                                <button class="na-btn-primary" aria-label="Export graph">Export</button>
+                            </div>
+                        </div>
+                        <div class="na-divider na-my-3_5"></div>
+                        <div class="na-lineage-advanced">
+                            <div class="na-metadata na-mb-3">UPSTREAM DEPENDENCIES (12 sources)</div>
+                            <div style="margin-bottom:24px;">
+                                <span class="na-lineage-node">payment_gateway</span>
+                                <span class="na-lineage-node">order_processing</span>
+                                <span class="na-lineage-node">inventory_system</span>
+                                <span class="na-lineage-node">customer_service</span>
+                                <span class="na-lineage-node">shipping_logistics</span>
+                                <span class="na-lineage-node">billing_system</span>
+                            </div>
+                            <div class="na-metadata na-mb-3">CURRENT TABLE</div>
+                            <div style="margin-bottom:24px;">
+                                <span class="na-lineage-node is-current">customer_transactions</span>
+                            </div>
+                            <div class="na-metadata na-mb-3">DOWNSTREAM DEPENDENCIES (8 consumers)</div>
+                            <div>
+                                <span class="na-lineage-node">revenue_analytics</span>
+                                <span class="na-lineage-node">customer_insights</span>
+                                <span class="na-lineage-node">financial_reporting</span>
+                                <span class="na-lineage-node">ml_training_data</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="na-tab-content" id="quality">
+                        <div class="na-panel-head">
+                            <div>
+                                <div class="na-card-title">Data Quality Metrics</div>
+                                <div class="na-card-meta">Overall table health</div>
+                            </div>
+                        </div>
+                        <div class="na-divider na-my-3_5"></div>
+                        <div class="na-quality-metrics">
+                            <div class="na-quality-item">
+                                <div class="na-quality-header">
+                                    <span class="na-metadata">Completeness</span>
+                                    <span class="na-data">96.8%</span>
+                                </div>
+                                <div class="na-progress-bar">
+                                    <div class="na-progress-fill" style="width: 96.8%;"
+                                        aria-label="Completeness: 96.8%"></div>
+                                </div>
+                            </div>
+                            <div class="na-quality-item">
+                                <div class="na-quality-header">
+                                    <span class="na-metadata">Accuracy</span>
+                                    <span class="na-data">94.2%</span>
+                                </div>
+                                <div class="na-progress-bar">
+                                    <div class="na-progress-fill" style="width: 94.2%;" aria-label="Accuracy: 94.2%">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Form Example -->
+                <div class="na-card na-mt-6">
+                    <div class="na-panel-head">
+                        <div>
+                            <div class="na-card-title">Advanced Query Builder</div>
+                            <div class="na-card-meta">Create complex data queries with validation</div>
+                        </div>
+                    </div>
+                    <div class="na-divider na-my-3_5"></div>
+                    <form class="na-form-advanced">
+                        <div class="na-grid na-grid-2 na-gap-3">
+                            <div class="na-field" data-state="success">
+                                <label class="na-label" for="query-name">Query Name</label>
+                                <input class="na-input" id="query-name" type="text" value="Customer Revenue Analysis" />
+                            </div>
+                            <div class="na-field" data-state="error" data-error="Schema is required">
+                                <label class="na-label" for="query-schema">Schema</label>
+                                <select class="na-select" id="query-schema">
+                                    <option value="">Select schema...</option>
+                                    <option value="sales" selected>sales</option>
+                                    <option value="finance">finance</option>
+                                </select>
+                            </div>
+                            <div class="na-field">
+                                <label class="na-label" for="query-table">Table</label>
+                                <select class="na-select" id="query-table">
+                                    <option>customer_transactions</option>
+                                    <option>product_catalog</option>
+                                </select>
+                            </div>
+                            <div class="na-field">
+                                <label class="na-label" for="query-limit">Row Limit</label>
+                                <input class="na-input" id="query-limit" type="number" value="1000" />
+                            </div>
+                        </div>
+                        <div class="na-mt-4">
+                            <button class="na-btn-primary" type="submit">Execute Query</button>
+                            <button class="na-btn na-btn-ghost" type="button">Save as Template</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="na-footnote na-mt-6">
+                    Showing 5 of 1,247 tables • Last lineage scan: 2025-01-27 14:30:00 UTC •
+                    <a href="#" class="na-footnote-link">View all tables</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Tab Switching Script (Minimal JS for demo) -->
+    <script>
+        // Tab switching
+        document.querySelectorAll('.na-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.dataset.tab;
+                document.querySelectorAll('.na-tab').forEach(t => t.classList.remove('is-active'));
+                document.querySelectorAll('.na-tab-content').forEach(c => c.classList.remove('is-active'));
+                tab.classList.add('is-active');
+                document.getElementById(tabId)?.classList.add('is-active');
+            });
+        });
+
+        // Sortable table headers
+        document.querySelectorAll('.na-th[data-sortable]').forEach(th => {
+            th.addEventListener('click', () => {
+                const currentSort = th.dataset.sort;
+                th.dataset.sort = currentSort === 'asc' ? 'desc' : 'asc';
+            });
+        });
+    </script>
+</body>
+
+</html>

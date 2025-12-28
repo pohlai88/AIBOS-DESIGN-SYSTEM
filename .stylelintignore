@@ -1,0 +1,10 @@
+# Generated files
+style.css
+*.min.css
+
+# Dependencies
+node_modules/
+
+# Binary files
+tailwindcss-windows-x64.exe
+

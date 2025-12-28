@@ -1,0 +1,67 @@
+{
+  "name": "@aibos/design-system",
+  "version": "1.0.0",
+  "description": "Enterprise-grade design system with 254 tokens, 171 semantic classes, and Beast Mode patterns. Zero framework overhead, 100% Figma compliant.",
+  "type": "module",
+  "keywords": [
+    "design-system",
+    "css",
+    "tokens",
+    "ui",
+    "components",
+    "tailwind",
+    "design-tokens",
+    "neural-analog",
+    "enterprise"
+  ],
+  "author": "AI-BOS",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pohlai88/AIBOS-DESIGN-SYSTEM.git"
+  },
+  "homepage": "https://github.com/pohlai88/AIBOS-DESIGN-SYSTEM#readme",
+  "bugs": {
+    "url": "https://github.com/pohlai88/AIBOS-DESIGN-SYSTEM/issues"
+  },
+  "scripts": {
+    "build": "pnpm exec postcss input.css -o style.css && pnpm extract:tokens",
+    "watch": "pnpm exec postcss input.css -o style.css --watch",
+    "dev": "pnpm exec postcss input.css -o style.css --watch",
+    "extract:tokens": "node scripts/extract-tokens.js",
+    "extract:headless": "node scripts/extract-headless-map.cjs",
+    "enforce:semantics": "node scripts/enforce-semantics.cjs",
+    "lint": "eslint . && stylelint \"**/*.css\" --ignore-path .stylelintignore",
+    "lint:fix": "eslint . --fix && stylelint \"**/*.css\" --fix --ignore-path .stylelintignore",
+    "format": "prettier --write \"**/*.{css,js,ts,json,md}\"",
+    "format:check": "prettier --check \"**/*.{css,js,ts,json,md}\"",
+    "validate": "node scripts/validate-design-tokens.js",
+    "validate:all": "pnpm lint && pnpm validate && pnpm enforce:semantics",
+    "quality": "pnpm validate:all"
+  },
+  "main": "./style.css",
+  "exports": {
+    ".": "./style.css",
+    "./css": "./style.css",
+    "./tokens": "./dist/tokens.json",
+    "./tokens/typescript": "./dist/tokens/index.d.ts"
+  },
+  "files": [
+    "style.css",
+    "input.css",
+    "dist/**/*",
+    "README.md"
+  ],
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "autoprefixer": "^10.4.23",
+    "eslint": "^9.39.2",
+    "glob": "^11.0.0",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
+    "prettier": "^3.7.4",
+    "stylelint": "^16.26.1",
+    "stylelint-config-standard": "^39.0.1",
+    "tailwindcss": "^4.1.18"
+  }
+}

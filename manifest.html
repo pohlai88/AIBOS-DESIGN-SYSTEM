@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neo-Analog Design System - Visual Manifest</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .manifest-section {
+      margin-bottom: 4rem;
+      padding: 2rem;
+      border: 1px solid var(--color-stroke);
+      border-radius: var(--radius-panel);
+      background: var(--color-paper);
+    }
+    .manifest-section-title {
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--color-stroke);
+    }
+    .manifest-item {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: var(--color-paper-2);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--color-stroke-soft);
+    }
+    .manifest-item-label {
+      display: block;
+      margin-bottom: 0.75rem;
+      font-family: var(--font-family-mono);
+      font-size: 0.75rem;
+      color: var(--color-clay);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .manifest-item-preview {
+      padding: 1rem;
+      background: var(--color-void);
+      border-radius: var(--radius-control);
+    }
+    .manifest-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+  </style>
+</head>
+<body class="na-app na-density-comfort">
+  <div class="na-content">
+    <h1 class="na-h1">Neo-Analog Design System</h1>
+    <p class="na-metadata">Visual Manifest - All Semantic Classes</p>
+    <p class="na-metadata-small">Generated: 2025-01-27 | Purpose: Visual Regression Test Target</p>
+
+    <!-- Typography Hierarchy -->
+    <section class="manifest-section">
+      <h2 class="na-h2 manifest-section-title">Typography Hierarchy</h2>
+      <div class="manifest-grid">
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-h1</span>
+          <div class="manifest-item-preview">
+            <h1 class="na-h1">Page Title (32px, bold)</h1>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-h2</span>
+          <div class="manifest-item-preview">
+            <h2 class="na-h2">Section Title (24px, semibold)</h2>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-h3</span>
+          <div class="manifest-item-preview">
+            <h3 class="na-h3">Subsection Title (20px, semibold)</h3>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-h4</span>
+          <div class="manifest-item-preview">
+            <h4 class="na-h4">Card Title (18px, semibold)</h4>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-h5</span>
+          <div class="manifest-item-preview">
+            <h5 class="na-h5">Small Title (16px, semibold)</h5>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-h6</span>
+          <div class="manifest-item-preview">
+            <h6 class="na-h6">Micro Title (14px, semibold)</h6>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Data & Metadata -->
+    <section class="manifest-section">
+      <h2 class="na-h2 manifest-section-title">Data & Metadata</h2>
+      <div class="manifest-grid">
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-data</span>
+          <div class="manifest-item-preview">
+            <div class="na-data">$12,450.00</div>
+            <div class="na-data">1,234,567</div>
+            <div class="na-data">99.9%</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-data-large</span>
+          <div class="manifest-item-preview">
+            <div class="na-data-large">1,234,567</div>
+            <div class="na-data-large">$12,450.00</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-metadata</span>
+          <div class="manifest-item-preview">
+            <div class="na-metadata">PO-88219 • Feed Supply</div>
+            <div class="na-metadata">Last Updated 2 Hours Ago</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-metadata-small</span>
+          <div class="manifest-item-preview">
+            <div class="na-metadata-small">Last updated 2 hours ago</div>
+            <div class="na-metadata-small">Created: 2025-01-27</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Layout Components -->
+    <section class="manifest-section">
+      <h2 class="na-h2 manifest-section-title">Layout Components</h2>
+      <div class="manifest-grid">
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-card</span>
+          <div class="manifest-item-preview">
+            <div class="na-card">
+              <h4 class="na-h4">Card Title</h4>
+              <div class="na-data">Card content</div>
+            </div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-panel</span>
+          <div class="manifest-item-preview">
+            <div class="na-panel">
+              <h4 class="na-h4">Panel Title</h4>
+              <div class="na-data">Panel content</div>
+            </div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-content</span>
+          <div class="manifest-item-preview">
+            <div class="na-content" style="background: var(--color-paper-2); border: 1px solid var(--color-stroke);">
+              Content area with 32px padding
+            </div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-grid</span>
+          <div class="manifest-item-preview">
+            <div class="na-grid" style="grid-template-columns: repeat(2, 1fr);">
+              <div style="background: var(--color-paper-2); padding: 1rem; border-radius: var(--radius-control);">Item 1</div>
+              <div style="background: var(--color-paper-2); padding: 1rem; border-radius: var(--radius-control);">Item 2</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Components -->
+    <section class="manifest-section">
+      <h2 class="na-h2 manifest-section-title">Interactive Components</h2>
+      <div class="manifest-grid">
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-btn</span>
+          <div class="manifest-item-preview">
+            <button class="na-btn">Default Button</button>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-btn-primary</span>
+          <div class="manifest-item-preview">
+            <button class="na-btn-primary">Primary Button</button>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-btn-ghost</span>
+          <div class="manifest-item-preview">
+            <button class="na-btn-ghost">Ghost Button</button>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-btn-danger</span>
+          <div class="manifest-item-preview">
+            <button class="na-btn-danger">Danger Button</button>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-iconbtn</span>
+          <div class="manifest-item-preview">
+            <button class="na-iconbtn">⚙</button>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-input</span>
+          <div class="manifest-item-preview">
+            <input class="na-input" type="text" placeholder="Enter text..." />
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-select</span>
+          <div class="manifest-item-preview">
+            <select class="na-select">
+              <option>Option 1</option>
+              <option>Option 2</option>
+            </select>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-textarea</span>
+          <div class="manifest-item-preview">
+            <textarea class="na-textarea" placeholder="Enter text..."></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form Components -->
+    <section class="manifest-section">
+      <h2 class="na-h2 manifest-section-title">Form Components</h2>
+      <div class="manifest-grid">
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-field</span>
+          <div class="manifest-item-preview">
+            <div class="na-field">
+              <label class="na-label">Email Address</label>
+              <input class="na-input" type="email" />
+              <p class="na-help">We'll never share your email</p>
+            </div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-label</span>
+          <div class="manifest-item-preview">
+            <label class="na-label">Field Label</label>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-help</span>
+          <div class="manifest-item-preview">
+            <p class="na-help">This is help text for the field</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Status Components -->
+    <section class="manifest-section">
+      <h2 class="na-h2 manifest-section-title">Status Components</h2>
+      <div class="manifest-grid">
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-status.ok</span>
+          <div class="manifest-item-preview">
+            <span class="na-status ok">Active</span>
+            <span class="na-status ok">Connected</span>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-status.pending</span>
+          <div class="manifest-item-preview">
+            <span class="na-status pending">Pending</span>
+            <span class="na-status pending">Processing</span>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-status.bad</span>
+          <div class="manifest-item-preview">
+            <span class="na-status bad">Failed</span>
+            <span class="na-status bad">Error</span>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-status.warn</span>
+          <div class="manifest-item-preview">
+            <span class="na-status warn">Warning</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Table Components -->
+    <section class="manifest-section">
+      <h2 class="na-h2 manifest-section-title">Table Components</h2>
+      <div class="manifest-item">
+        <span class="manifest-item-label">.na-table-wrap, .na-table, .na-th, .na-tr, .na-td</span>
+        <div class="manifest-item-preview">
+          <div class="na-table-wrap">
+            <table class="na-table">
+              <thead>
+                <tr>
+                  <th class="na-th">Name</th>
+                  <th class="na-th">Amount</th>
+                  <th class="na-th">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="na-tr">
+                  <td class="na-td">Item 1</td>
+                  <td class="na-td">$100</td>
+                  <td class="na-td">
+                    <span class="na-status ok">Active</span>
+                  </td>
+                </tr>
+                <tr class="na-tr">
+                  <td class="na-td">Item 2</td>
+                  <td class="na-td">$200</td>
+                  <td class="na-td">
+                    <span class="na-status pending">Pending</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI Components -->
+    <section class="manifest-section">
+      <h2 class="na-h2 manifest-section-title">KPI Components</h2>
+      <div class="manifest-grid">
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-kpi</span>
+          <div class="manifest-item-preview">
+            <div class="na-kpi">
+              <div class="na-kpi-icon">📊</div>
+              <div>
+                <div class="na-kpi-value">1,234</div>
+                <div class="na-kpi-label">Total Users</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-kpi-value</span>
+          <div class="manifest-item-preview">
+            <div class="na-kpi-value">1,234,567</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-kpi-label</span>
+          <div class="manifest-item-preview">
+            <div class="na-kpi-label">Total Revenue</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-trend</span>
+          <div class="manifest-item-preview">
+            <span class="na-trend up">+12.5%</span>
+            <span class="na-trend down">-5.2%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Empty States -->
+    <section class="manifest-section">
+      <h2 class="na-h2 manifest-section-title">Empty States</h2>
+      <div class="manifest-grid">
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-empty</span>
+          <div class="manifest-item-preview">
+            <div class="na-empty">
+              <div class="na-empty-top">
+                <div class="na-empty-illustration"></div>
+                <div>
+                  <div class="na-empty-title">No items found</div>
+                  <div class="na-empty-desc">Get started by creating your first item</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-error</span>
+          <div class="manifest-item-preview">
+            <div class="na-error">
+              <div class="na-error-top">
+                <div class="na-error-icon">⚠</div>
+                <div>
+                  <div class="na-error-title">Error occurred</div>
+                  <div class="na-error-desc">Something went wrong. Please try again.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Utility Classes -->
+    <section class="manifest-section">
+      <h2 class="na-h2 manifest-section-title">Utility Classes</h2>
+      <div class="manifest-grid">
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-tabular</span>
+          <div class="manifest-item-preview">
+            <div class="na-data na-tabular">1,234,567</div>
+            <div class="na-data">1,234,567 (without tabular)</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-muted</span>
+          <div class="manifest-item-preview">
+            <div class="na-muted">Muted text</div>
+            <div>Normal text</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">.na-divider</span>
+          <div class="manifest-item-preview">
+            <div>Content above</div>
+            <div class="na-divider"></div>
+            <div>Content below</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Color Semantics -->
+    <section class="manifest-section">
+      <h2 class="na-h2 manifest-section-title">Color Semantics</h2>
+      <div class="manifest-grid">
+        <div class="manifest-item">
+          <span class="manifest-item-label">text-lux</span>
+          <div class="manifest-item-preview">
+            <div class="text-lux">Primary text (lux)</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">text-lux-dim</span>
+          <div class="manifest-item-preview">
+            <div class="text-lux-dim">Secondary text (lux-dim)</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">text-clay</span>
+          <div class="manifest-item-preview">
+            <div class="text-clay">Metadata text (clay)</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">text-gold</span>
+          <div class="manifest-item-preview">
+            <div class="text-gold">Accent text (gold)</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">bg-paper</span>
+          <div class="manifest-item-preview">
+            <div class="bg-paper p-4 rounded-card">Paper background</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">bg-paper-2</span>
+          <div class="manifest-item-preview">
+            <div class="bg-paper-2 p-4 rounded-card">Paper-2 background</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Spacing Examples -->
+    <section class="manifest-section">
+      <h2 class="na-h2 manifest-section-title">Spacing (Token-Based)</h2>
+      <div class="manifest-grid">
+        <div class="manifest-item">
+          <span class="manifest-item-label">p-4 (16px)</span>
+          <div class="manifest-item-preview">
+            <div class="bg-paper-2 p-4 rounded-control">Padding 4</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">p-6 (24px)</span>
+          <div class="manifest-item-preview">
+            <div class="bg-paper-2 p-6 rounded-control">Padding 6</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">p-8 (32px)</span>
+          <div class="manifest-item-preview">
+            <div class="bg-paper-2 p-8 rounded-control">Padding 8</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">gap-6 (24px)</span>
+          <div class="manifest-item-preview">
+            <div class="flex gap-6">
+              <div class="bg-paper-2 p-4 rounded-control">Item 1</div>
+              <div class="bg-paper-2 p-4 rounded-control">Item 2</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Border Radius -->
+    <section class="manifest-section">
+      <h2 class="na-h2 manifest-section-title">Border Radius (Semantic)</h2>
+      <div class="manifest-grid">
+        <div class="manifest-item">
+          <span class="manifest-item-label">rounded-card</span>
+          <div class="manifest-item-preview">
+            <div class="bg-paper-2 p-4 rounded-card">Card radius (12px)</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">rounded-panel</span>
+          <div class="manifest-item-preview">
+            <div class="bg-paper-2 p-4 rounded-panel">Panel radius (16px)</div>
+          </div>
+        </div>
+        <div class="manifest-item">
+          <span class="manifest-item-label">rounded-control</span>
+          <div class="manifest-item-preview">
+            <div class="bg-paper-2 p-4 rounded-control">Control radius (8px)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--color-stroke);">
+      <p class="na-metadata">Neo-Analog Design System Visual Manifest</p>
+      <p class="na-metadata-small">This file serves as a visual regression test target. If any class looks incorrect here, it's incorrect everywhere.</p>
+    </footer>
+  </div>
+</body>
+</html>
+

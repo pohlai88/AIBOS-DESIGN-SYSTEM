@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEO-ANALOG // OMNI ERP CONSOLE</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* =================================================================
+           LEVEL 7: THE WORK PHYSICS (ERP Specifics)
+           ================================================================= */
+        :root {
+            /* Layout Geometry */
+            --w-sidebar: 240px;
+            --w-inspector: 320px;
+            --h-header: 56px;
+            --h-toolbar: 48px;
+
+            /* The Color of "Work" */
+            --c-void: #050505;
+            --c-surface-1: #0a0a0b;
+            --c-surface-2: #141416;
+            --c-surface-3: #1f1f22;
+            --c-border: #27272a;
+            --c-active: #3f3f46;
+
+            /* Status Signals */
+            --s-plan: #71717a;
+            --s-wip: #eab308;
+            --s-done: #10b981;
+            --s-block: #f43f5e;
+        }
+
+        body {
+            background: var(--c-void);
+            color: #e4e4e7;
+            font-family: 'Inter', system-ui, sans-serif;
+            overflow: hidden;
+            /* App Mode */
+            font-size: 13px;
+        }
+
+        /* --- THE SHELL --- */
+        .erp-shell {
+            display: grid;
+            grid-template-areas:
+                "head head head"
+                "side main insp";
+            grid-template-columns: var(--w-sidebar) 1fr var(--w-inspector);
+            grid-template-rows: var(--h-header) 1fr;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* --- 1. HEADER (Command) --- */
+        .erp-head {
+            grid-area: head;
+            background: var(--c-surface-1);
+            border-bottom: 1px solid var(--c-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 50;
+        }
+
+        .erp-brand {
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .erp-mark {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #eab308, #b45309);
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(234, 179, 8, 0.3);
+        }
+
+        /* --- 2. SIDEBAR (Modules) --- */
+        .erp-side {
+            grid-area: side;
+            background: var(--c-surface-1);
+            border-right: 1px solid var(--c-border);
+            display: flex;
+            flex-direction: column;
+            padding: 16px 8px;
+        }
+
+        .nav-group {
+            margin-bottom: 24px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #71717a;
+            margin-bottom: 8px;
+            padding-left: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #a1a1aa;
+            transition: 0.1s;
+        }
+
+        .nav-item:hover {
+            background: var(--c-surface-2);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--c-surface-3);
+            color: white;
+            border: 1px solid var(--c-border);
+        }
+
+        .badge {
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--c-border);
+            color: white;
+        }
+
+        /* --- 3. MAIN WORKSPACE (The Transformer) --- */
+        .erp-main {
+            grid-area: main;
+            background: var(--c-void);
+            display: grid;
+            grid-template-rows: var(--h-toolbar) 1fr;
+            overflow: hidden;
+        }
+
+        /* The View Switcher (Radio Logic) */
+        .view-controls {
+            display: flex;
+            gap: 2px;
+            background: var(--c-surface-2);
+            padding: 4px;
+            border-radius: 6px;
+            border: 1px solid var(--c-border);
+        }
+
+        .view-radio {
+            display: none;
+        }
+
+        .view-label {
+            padding: 4px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            color: #71717a;
+            font-weight: 500;
+        }
+
+        .view-radio:checked+.view-label {
+            background: var(--c-active);
+            color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        /* View Containers */
+        .view-pane {
+            display: none;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* CSS State Machine for switching views */
+        #v-grid:checked~.erp-shell .erp-main #pane-grid {
+            display: block;
+        }
+
+        #v-board:checked~.erp-shell .erp-main #pane-board {
+            display: block;
+        }
+
+        #v-gantt:checked~.erp-shell .erp-main #pane-gantt {
+            display: block;
+        }
+
+        /* --- VIEW A: THE SUPER GRID (Data Entry) --- */
+        .super-grid-wrap {
+            height: 100%;
+            overflow: auto;
+            position: relative;
+        }
+
+        .super-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .super-table th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--c-surface-2);
+            height: 40px;
+            text-align: left;
+            padding: 0 12px;
+            border-bottom: 1px solid var(--c-border);
+            color: #71717a;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .super-table td {
+            height: 40px;
+            padding: 0 12px;
+            border-bottom: 1px solid var(--c-surface-3);
+            border-right: 1px solid var(--c-surface-3);
+            background: var(--c-void);
+        }
+
+        .super-table tr:hover td {
+            background: var(--c-surface-1);
+        }
+
+        /* CRUD Editability Visuals */
+        [contenteditable]:focus {
+            outline: 2px solid #eab308;
+            background: var(--c-surface-3);
+            color: white;
+        }
+
+        /* --- VIEW B: THE KANBAN (Workflow) --- */
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            height: 100%;
+            padding: 16px;
+            overflow-x: auto;
+        }
+
+        .kanban-col {
+            background: var(--c-surface-1);
+            border: 1px solid var(--c-border);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .kanban-head {
+            padding: 12px;
+            border-bottom: 1px solid var(--c-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .kanban-body {
+            padding: 8px;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .k-card {
+            background: var(--c-surface-2);
+            border: 1px solid var(--c-border);
+            padding: 10px;
+            border-radius: 4px;
+            cursor: grab;
+            transition: transform 0.2s;
+        }
+
+        .k-card:hover {
+            border-color: #71717a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .k-tag {
+            font-size: 10px;
+            padding: 2px 4px;
+            border-radius: 3px;
+            background: var(--c-surface-3);
+            border: 1px solid var(--c-border);
+        }
+
+        /* --- VIEW C: THE GANTT (Timeline) --- */
+        .gantt-wrap {
+            padding: 16px;
+            overflow: auto;
+            height: 100%;
+        }
+
+        .gantt-header {
+            display: flex;
+            border-bottom: 1px solid var(--c-border);
+            margin-bottom: 8px;
+        }
+
+        .gantt-time {
+            flex: 1;
+            text-align: center;
+            font-size: 10px;
+            color: #71717a;
+            border-right: 1px solid var(--c-surface-3);
+            padding-bottom: 4px;
+        }
+
+        .gantt-row {
+            display: flex;
+            align-items: center;
+            height: 32px;
+            border-bottom: 1px solid var(--c-surface-3);
+            position: relative;
+        }
+
+        .gantt-label {
+            width: 120px;
+            font-size: 12px;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .gantt-track {
+            flex: 1;
+            position: relative;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+        }
+
+        .gantt-bar {
+            grid-column: var(--s) / span var(--d);
+            height: 16px;
+            align-self: center;
+            border-radius: 4px;
+            background: var(--c);
+            opacity: 0.8;
+            font-size: 10px;
+            color: black;
+            display: flex;
+            align-items: center;
+            padding-left: 6px;
+            font-weight: 600;
+        }
+
+        /* --- 4. INSPECTOR (CRUD Context) --- */
+        .erp-insp {
+            grid-area: insp;
+            background: var(--c-surface-1);
+            border-left: 1px solid var(--c-border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .insp-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 11px;
+            color: #a1a1aa;
+            font-weight: 500;
+        }
+
+        .form-input {
+            background: var(--c-surface-2);
+            border: 1px solid var(--c-border);
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .form-input:focus {
+            border-color: #eab308;
+            outline: none;
+        }
+
+        /* Shared Components */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        .s-wip {
+            background: var(--s-wip);
+            box-shadow: 0 0 8px var(--s-wip);
+        }
+
+        .s-done {
+            background: var(--s-done);
+            box-shadow: 0 0 8px var(--s-done);
+        }
+
+        .s-plan {
+            background: var(--s-plan);
+        }
+    </style>
+</head>
+
+<body>
+
+    <input type="radio" name="view" id="v-grid" class="view-radio" checked>
+    <input type="radio" name="view" id="v-board" class="view-radio">
+    <input type="radio" name="view" id="v-gantt" class="view-radio">
+
+    <div class="erp-shell">
+
+        <header class="erp-head">
+            <div class="erp-brand">
+                <div class="erp-mark"></div>
+                <span>OMNI CONSOLE</span>
+                <span style="font-weight: 400; color: #71717a;">// PRODUCTION</span>
+            </div>
+            <div style="display:flex; gap:12px;">
+                <input type="text" placeholder="Global Search (Cmd+K)"
+                    style="background:var(--c-surface-2); border:1px solid var(--c-border); padding:6px 12px; border-radius:4px; color:white; width: 240px;">
+                <div class="na-avatar"></div>
+            </div>
+        </header>
+
+        <aside class="erp-side">
+            <div class="nav-group">
+                <div class="nav-label">Core Modules</div>
+                <div class="nav-item active">
+                    <span>Manufacturing</span> <span class="badge">12</span>
+                </div>
+                <div class="nav-item"><span>Procurement</span></div>
+                <div class="nav-item"><span>Inventory</span> <span class="badge"
+                        style="background:#eab308; color:black;">!</span></div>
+            </div>
+            <div class="nav-group">
+                <div class="nav-label">Finance</div>
+                <div class="nav-item"><span>Ledger</span></div>
+                <div class="nav-item"><span>Costing</span></div>
+            </div>
+        </aside>
+
+        <main class="erp-main">
+            <div
+                style="height: var(--h-toolbar); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px;">
+                <div class="view-controls">
+                    <label for="v-grid" class="view-label">Data Grid</label>
+                    <label for="v-board" class="view-label">Kanban</label>
+                    <label for="v-gantt" class="view-label">Gantt</label>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button class="na-btn">Filter</button>
+                    <button class="na-btn-primary">+ Create WO</button>
+                </div>
+            </div>
+
+            <div id="pane-grid" class="view-pane">
+                <div class="super-grid-wrap">
+                    <table class="super-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;"><input type="checkbox"></th>
+                                <th style="width: 120px;">Order #</th>
+                                <th>Item</th>
+                                <th>Status</th>
+                                <th>Qty</th>
+                                <th>Due Date</th>
+                                <th>Work Center</th>
+                                <th>Cost Est.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#eab308;">WO-2024-001</td>
+                                <td contenteditable="true">Circuit Assembly A1</td>
+                                <td><span class="status-dot s-wip"></span> WIP</td>
+                                <td contenteditable="true" class="na-tabular">500</td>
+                                <td contenteditable="true">2025-01-30</td>
+                                <td>Line-1</td>
+                                <td class="na-tabular">$12,450</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#eab308;">WO-2024-002</td>
+                                <td contenteditable="true">Thermal Casing</td>
+                                <td><span class="status-dot s-plan"></span> Planned</td>
+                                <td contenteditable="true" class="na-tabular">1,200</td>
+                                <td contenteditable="true">2025-02-02</td>
+                                <td>Line-3</td>
+                                <td class="na-tabular">$4,200</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#10b981;">WO-2024-003</td>
+                                <td contenteditable="true">Control Unit</td>
+                                <td><span class="status-dot s-done"></span> QC Pass</td>
+                                <td contenteditable="true" class="na-tabular">50</td>
+                                <td contenteditable="true">2025-01-28</td>
+                                <td>Cleanroom</td>
+                                <td class="na-tabular">$8,900</td>
+                            </tr>
+                            <!-- Additional rows generated via script -->
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#a1a1aa;">WO-2024-004</td>
+                                <td contenteditable="true">Component X-4</td>
+                                <td><span class="status-dot s-plan"></span> Queued</td>
+                                <td contenteditable="true" class="na-tabular">250</td>
+                                <td contenteditable="true">2025-02-14</td>
+                                <td>Auto-1</td>
+                                <td class="na-tabular">$450</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#a1a1aa;">WO-2024-005</td>
+                                <td contenteditable="true">Component X-5</td>
+                                <td><span class="status-dot s-plan"></span> Queued</td>
+                                <td contenteditable="true" class="na-tabular">180</td>
+                                <td contenteditable="true">2025-02-15</td>
+                                <td>Auto-2</td>
+                                <td class="na-tabular">$320</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#a1a1aa;">WO-2024-006</td>
+                                <td contenteditable="true">Component X-6</td>
+                                <td><span class="status-dot s-plan"></span> Queued</td>
+                                <td contenteditable="true" class="na-tabular">420</td>
+                                <td contenteditable="true">2025-02-16</td>
+                                <td>Auto-0</td>
+                                <td class="na-tabular">$680</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#a1a1aa;">WO-2024-007</td>
+                                <td contenteditable="true">Component X-7</td>
+                                <td><span class="status-dot s-plan"></span> Queued</td>
+                                <td contenteditable="true" class="na-tabular">150</td>
+                                <td contenteditable="true">2025-02-17</td>
+                                <td>Auto-1</td>
+                                <td class="na-tabular">$290</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#a1a1aa;">WO-2024-008</td>
+                                <td contenteditable="true">Component X-8</td>
+                                <td><span class="status-dot s-plan"></span> Queued</td>
+                                <td contenteditable="true" class="na-tabular">380</td>
+                                <td contenteditable="true">2025-02-18</td>
+                                <td>Auto-2</td>
+                                <td class="na-tabular">$540</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#a1a1aa;">WO-2024-009</td>
+                                <td contenteditable="true">Component X-9</td>
+                                <td><span class="status-dot s-plan"></span> Queued</td>
+                                <td contenteditable="true" class="na-tabular">220</td>
+                                <td contenteditable="true">2025-02-19</td>
+                                <td>Auto-0</td>
+                                <td class="na-tabular">$380</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#a1a1aa;">WO-2024-010</td>
+                                <td contenteditable="true">Component X-10</td>
+                                <td><span class="status-dot s-plan"></span> Queued</td>
+                                <td contenteditable="true" class="na-tabular">310</td>
+                                <td contenteditable="true">2025-02-20</td>
+                                <td>Auto-1</td>
+                                <td class="na-tabular">$520</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#a1a1aa;">WO-2024-011</td>
+                                <td contenteditable="true">Component X-11</td>
+                                <td><span class="status-dot s-plan"></span> Queued</td>
+                                <td contenteditable="true" class="na-tabular">190</td>
+                                <td contenteditable="true">2025-02-21</td>
+                                <td>Auto-2</td>
+                                <td class="na-tabular">$340</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#a1a1aa;">WO-2024-012</td>
+                                <td contenteditable="true">Component X-12</td>
+                                <td><span class="status-dot s-plan"></span> Queued</td>
+                                <td contenteditable="true" class="na-tabular">460</td>
+                                <td contenteditable="true">2025-02-22</td>
+                                <td>Auto-0</td>
+                                <td class="na-tabular">$720</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#a1a1aa;">WO-2024-013</td>
+                                <td contenteditable="true">Component X-13</td>
+                                <td><span class="status-dot s-plan"></span> Queued</td>
+                                <td contenteditable="true" class="na-tabular">280</td>
+                                <td contenteditable="true">2025-02-23</td>
+                                <td>Auto-1</td>
+                                <td class="na-tabular">$480</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#a1a1aa;">WO-2024-014</td>
+                                <td contenteditable="true">Component X-14</td>
+                                <td><span class="status-dot s-plan"></span> Queued</td>
+                                <td contenteditable="true" class="na-tabular">340</td>
+                                <td contenteditable="true">2025-02-24</td>
+                                <td>Auto-2</td>
+                                <td class="na-tabular">$590</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td style="font-weight:600; color:#a1a1aa;">WO-2024-015</td>
+                                <td contenteditable="true">Component X-15</td>
+                                <td><span class="status-dot s-plan"></span> Queued</td>
+                                <td contenteditable="true" class="na-tabular">210</td>
+                                <td contenteditable="true">2025-02-25</td>
+                                <td>Auto-0</td>
+                                <td class="na-tabular">$360</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="pane-board" class="view-pane">
+                <div class="kanban-board">
+                    <div class="kanban-col">
+                        <div class="kanban-head" style="border-top: 3px solid #71717a;">Planned (12)</div>
+                        <div class="kanban-body">
+                            <div class="k-card">
+                                <div style="font-weight:600; font-size:12px; margin-bottom:4px;">WO-2024-002</div>
+                                <div style="font-size:11px; color:#a1a1aa; margin-bottom:8px;">Thermal Casing</div>
+                                <div style="display:flex; justify-content:space-between;">
+                                    <span class="k-tag">Line-3</span>
+                                    <span class="k-tag">Feb 02</span>
+                                </div>
+                            </div>
+                            <div class="k-card">
+                                <div style="font-weight:600; font-size:12px; margin-bottom:4px;">WO-2024-005</div>
+                                <div style="font-size:11px; color:#a1a1aa; margin-bottom:8px;">Packaging B</div>
+                                <span class="k-tag">Pack-1</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kanban-col">
+                        <div class="kanban-head" style="border-top: 3px solid #eab308;">In Production (4)</div>
+                        <div class="kanban-body">
+                            <div class="k-card" style="border-left: 2px solid #eab308;">
+                                <div style="font-weight:600; font-size:12px; margin-bottom:4px;">WO-2024-001</div>
+                                <div style="font-size:11px; color:#a1a1aa; margin-bottom:8px;">Circuit Assembly A1</div>
+                                <div
+                                    style="height:4px; background:#27272a; border-radius:2px; margin-bottom:8px; overflow:hidden;">
+                                    <div style="width:65%; background:#eab308; height:100%;"></div>
+                                </div>
+                                <div style="display:flex; justify-content:space-between;">
+                                    <span class="k-tag">Line-1</span>
+                                    <span style="font-size:10px; color:#eab308;">65%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kanban-col">
+                        <div class="kanban-head" style="border-top: 3px solid #3b82f6;">Quality Control (2)</div>
+                        <div class="kanban-body">
+                            <div class="k-card">
+                                <div style="font-weight:600; font-size:12px; margin-bottom:4px;">WO-2024-003</div>
+                                <div style="font-size:11px; color:#a1a1aa; margin-bottom:8px;">Control Unit</div>
+                                <span class="k-tag">Cleanroom</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kanban-col">
+                        <div class="kanban-head" style="border-top: 3px solid #10b981;">Complete (82)</div>
+                        <div class="kanban-body">
+                            <div class="k-card" style="opacity:0.6;">
+                                <div style="font-weight:600; font-size:12px; margin-bottom:4px;">WO-2023-999</div>
+                                <div style="font-size:11px; color:#a1a1aa;">Legacy Batch</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pane-gantt" class="view-pane">
+                <div class="gantt-wrap">
+                    <div class="gantt-header">
+                        <div class="gantt-label">Order</div>
+                        <div class="gantt-time">Wk 1</div>
+                        <div class="gantt-time">Wk 2</div>
+                        <div class="gantt-time">Wk 3</div>
+                        <div class="gantt-time">Wk 4</div>
+                    </div>
+
+                    <div class="gantt-row">
+                        <div class="gantt-label">WO-001</div>
+                        <div class="gantt-track">
+                            <div class="gantt-bar" style="--s: 1; --d: 4; --c: #eab308;">Assembly</div>
+                        </div>
+                    </div>
+                    <div class="gantt-row">
+                        <div class="gantt-label">WO-002</div>
+                        <div class="gantt-track">
+                            <div class="gantt-bar" style="--s: 3; --d: 3; --c: #71717a;">Casing</div>
+                        </div>
+                    </div>
+                    <div class="gantt-row">
+                        <div class="gantt-label">WO-003</div>
+                        <div class="gantt-track">
+                            <div class="gantt-bar" style="--s: 5; --d: 2; --c: #10b981;">QC</div>
+                        </div>
+                    </div>
+                    <div class="gantt-row">
+                        <div class="gantt-label">WO-004</div>
+                        <div class="gantt-track">
+                            <div class="gantt-bar" style="--s: 7; --d: 4; --c: #3b82f6;">Pack</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <aside class="erp-insp">
+            <div style="border-bottom: 1px solid var(--c-border); padding-bottom: 16px; margin-bottom: 16px;">
+                <div class="nav-label">SELECTED CONTEXT</div>
+                <div style="font-size: 18px; font-weight: 700; color: white;">WO-2024-001</div>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                    <span class="badge" style="background:#eab308; color:black;">IN PRODUCTION</span>
+                    <span class="badge">PRIORITY</span>
+                </div>
+            </div>
+
+            <div class="insp-form">
+                <div class="form-group">
+                    <label class="form-label">Quantity</label>
+                    <input type="text" class="form-input" value="500">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Assigned Work Center</label>
+                    <select class="form-input">
+                        <option>Line-1 (Assembly)</option>
+                        <option>Line-2 (Testing)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Scheduled Date</label>
+                    <input type="date" class="form-input" value="2025-01-30">
+                </div>
+
+                <div style="margin-top:16px;">
+                    <div class="nav-label">DEPENDENCIES</div>
+                    <div
+                        style="background:var(--c-surface-2); padding:8px; border-radius:4px; border:1px solid var(--c-border);">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                            <span>Material</span>
+                            <span style="color:#10b981;">Available</span>
+                        </div>
+                        <div style="height:4px; background:#27272a; border-radius:2px;">
+                            <div style="width:100%; background:#10b981; height:100%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:auto; display:flex; flex-direction:column; gap:8px;">
+                <button class="na-btn-primary" style="width:100%;">Save Changes</button>
+                <button class="na-btn" style="width:100%; border-color:#f43f5e; color:#f43f5e;">Hold Order</button>
+            </div>
+        </aside>
+
+    </div>
+
+</body>
+
+</html>
