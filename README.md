@@ -37,7 +37,31 @@ import '@aibos/design-system/css';
 <div className="na-card na-p-6">Content</div>
 ```
 
-📖 **See [EXTERNAL_USAGE.md](./EXTERNAL_USAGE.md) for complete external usage guide**
+📖 **See [EXTERNAL_USAGE.md](./EXTERNAL_USAGE.md) for complete external usage guide**  
+📋 **See [API_REFERENCE.md](./API_REFERENCE.md) for typography, spacing, and component reference**
+
+### 📋 Quick Reference for npm Users
+
+**Typography Hierarchy:**
+- `.na-h1` = 32px bold (Page titles)
+- `.na-h2` = 24px semibold (Section titles)
+- `.na-h3` = 20px semibold (Subsections)
+- `.na-h4` = 18px semibold (Card titles)
+- `.na-data` = 14px monospace (Data values)
+- `.na-data-large` = 30px serif (KPI values)
+- `.na-metadata` = 11px uppercase (Labels)
+
+**Spacing:**
+- Use standard Tailwind classes: `p-4` (16px), `p-6` (24px), `p-8` (32px)
+- Standard padding: `p-6` (24px)
+- Standard gap: `gap-6` (24px)
+
+**Components:**
+- Cards: `.na-card p-6`
+- Buttons: `.na-btn na-btn-primary`
+- Status: `.na-status na-status-ok`
+
+👉 **Full details in [API_REFERENCE.md](./API_REFERENCE.md)**
 
 ### For Developers (Local Development)
 
@@ -68,9 +92,24 @@ pnpm validate:all   # Combined validation
 
 ## Documentation
 
+### For npm Package Users
+
+1. **[API Reference](./API_REFERENCE.md)** ⭐ **QUICK REFERENCE**
+   - Typography hierarchy (sizes, weights, usage)
+   - Spacing & padding scale
+   - Component classes
+   - Color tokens
+   - Complete API reference
+
+2. **[External Usage Guide](./EXTERNAL_USAGE.md)** ⭐ **GETTING STARTED**
+   - Installation instructions
+   - Framework examples (React, Vue, Svelte)
+   - Common patterns
+   - Troubleshooting
+
 ### Essential Guides
 
-1. **[Design System Guide](./docs/DESIGN_SYSTEM.md)** ⭐ **START HERE**
+3. **[Design System Guide](./docs/DESIGN_SYSTEM.md)** ⭐ **COMPLETE REFERENCE**
    - Complete design system reference
    - All tokens, components, and patterns
    - Usage guidelines and examples

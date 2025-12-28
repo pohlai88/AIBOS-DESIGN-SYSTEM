@@ -288,6 +288,7 @@ export function Button() {
 
 ## 📖 Documentation
 
+- **[API Reference](./API_REFERENCE.md)** ⭐ **START HERE** - Typography, spacing, components, colors
 - **[Design System Guide](./docs/DESIGN_SYSTEM.md)** - Complete reference
 - **[Advanced Patterns](./docs/ADVANCED_PATTERNS.md)** - Beast Mode patterns
 - **[Color System](./docs/COLOR_SYSTEM_REFERENCE.md)** - Color tokens
