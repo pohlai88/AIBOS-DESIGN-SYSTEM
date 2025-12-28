@@ -44,7 +44,7 @@
   --color-paper-hover: #27272a; /* Hover state */
 
   /* Text: High Contrast & Warmth */
-  --color-white: #ffffff; /* Pure white for primary buttons */
+  --color-white: #fff; /* Pure white for primary buttons */
   --color-lux: #f4f4f5; /* Primary (Zinc-50) */
   --color-lux-dim: #a1a1aa; /* Secondary (Zinc-400) */
   --color-clay: #71717a; /* Meta / Label (Zinc-500) */
@@ -64,8 +64,8 @@
   /* --- Typography Primitives --- */
   /* Font Families - Figma Standard Naming (100% Compliance) */
   --font-family-sans: "Inter", system-ui, sans-serif;
-  --font-family-serif: "Playfair Display", Georgia, serif;
-  --font-family-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+  --font-family-serif: "Playfair Display", georgia, serif;
+  --font-family-mono: "JetBrains Mono", ui-monospace, sfmono-regular, menlo, monaco, consolas, "Courier New", monospace;
 
   /* Font Weights - Figma Standard Complete Scale */
   --font-weight-thin: 100;
@@ -94,7 +94,7 @@
   --font-size-9xl: 8rem; /* 128px */
 
   /* --- Spacing Primitives - Figma Standard Scale (0px through 384px) --- */
-  --spacing-0: 0px;
+  --spacing-0: 0;
   --spacing-px: 1px;
   --spacing-0_5: 0.125rem; /* 2px */
   --spacing-1: 0.25rem; /* 4px */
@@ -402,43 +402,52 @@
     from {
       opacity: 0;
     }
+
     to {
       opacity: 1;
     }
   }
+
   @keyframes slide-up {
     from {
       transform: translateY(10px);
       opacity: 0;
     }
+
     to {
       transform: translateY(0);
       opacity: 1;
     }
   }
+
   @keyframes scale-in {
     from {
       transform: scale(0.985);
       opacity: 0;
     }
+
     to {
       transform: scale(1);
       opacity: 1;
     }
   }
+
   @keyframes soft-pulse {
     0%,
     100% {
       opacity: 0.85;
     }
+
     50% {
       opacity: 1;
     }
   }
+
   @keyframes shimmer {
     0% {
       background-position: -200% 0;
     }
+
     100% {
       background-position: 200% 0;
     }
@@ -527,16 +536,19 @@
     scrollbar-width: thin;
     scrollbar-color: rgba(228, 228, 231, 0.18) transparent;
   }
+
   .na-scroll::-webkit-scrollbar {
     width: 10px;
     height: 10px;
   }
+
   .na-scroll::-webkit-scrollbar-thumb {
     background: rgba(228, 228, 231, 0.16);
     border-radius: 999px;
     border: 2px solid transparent;
     background-clip: padding-box;
   }
+
   .na-scroll::-webkit-scrollbar-track {
     background: transparent;
   }
@@ -544,6 +556,7 @@
   /* Cursor-style typography utilities */
   .cursor-heading {
     @apply text-3xl font-semibold tracking-tight;
+
     line-height: var(--lh-tight);
     letter-spacing: -0.02em;
     color: var(--color-lux);
@@ -551,18 +564,21 @@
 
   .cursor-subheading {
     @apply text-lg font-medium;
+
     line-height: var(--lh-ui);
     color: color-mix(in oklab, var(--color-lux) 75%, var(--color-clay));
   }
 
   .cursor-label {
     @apply uppercase text-xs font-semibold tracking-[0.12em];
+
     line-height: var(--lh-tight);
     color: color-mix(in oklab, var(--color-lux) 60%, var(--color-clay));
   }
 
   .cursor-codeblock {
     @apply rounded-lg p-4 border;
+
     font-family: var(--font-code);
     font-size: 0.9rem;
     line-height: var(--lh-code);
@@ -573,6 +589,7 @@
 
   .cursor-prompt {
     @apply italic font-serif text-base;
+
     line-height: var(--lh-editorial);
     color: color-mix(in oklab, var(--color-lux) 70%, var(--color-clay));
   }
@@ -694,6 +711,7 @@
   .na-skip-link {
     @apply absolute -top-full left-4 z-50 px-4 py-2 bg-primary text-primary-foreground rounded-control font-semibold focus:top-4 transition-all;
   }
+
   .na-skip-link:focus {
     @apply top-4;
   }
@@ -701,7 +719,8 @@
   /* Screen reader only text */
   .sr-only {
     @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
-    clip: rect(0, 0, 0, 0);
+
+    clip-path: inset(50%);
   }
 
   /* Avatar - DEPRECATED: Use canonical definition at line 911 */
@@ -715,12 +734,15 @@
   .na-page-header {
     @apply mb-8 flex justify-between items-end;
   }
+
   .na-page-meta {
     @apply mt-2;
   }
+
   .na-page-subtitle {
     @apply mt-2;
   }
+
   .na-page-actions {
     @apply flex gap-3;
   }
@@ -728,6 +750,7 @@
   /* KPI Grid */
   .na-grid-kpi {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
     @apply mb-8;
   }
 
@@ -735,7 +758,8 @@
   .na-grid-3 {
     grid-template-columns: repeat(3, 1fr);
   }
-  @media (max-width: 1024px) {
+
+  @media (width <= 1024px) {
     .na-grid-3 {
       grid-template-columns: 1fr;
     }
@@ -744,21 +768,27 @@
   /* Interactive card */
   .na-card-interactive {
     @apply cursor-pointer;
+
     text-decoration: none;
     animation: na-card-entrance 0.4s var(--ease-premium) both;
   }
+
   .na-card-interactive:nth-child(1) {
     animation-delay: 0.05s;
   }
+
   .na-card-interactive:nth-child(2) {
     animation-delay: 0.1s;
   }
+
   .na-card-interactive:nth-child(3) {
     animation-delay: 0.15s;
   }
+
   .na-card-interactive:nth-child(4) {
     animation-delay: 0.2s;
   }
+
   .na-card-interactive:active {
     transform: translateY(0);
   }
@@ -768,6 +798,7 @@
       opacity: 0;
       transform: translateY(8px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -782,9 +813,11 @@
   /* Chart grid */
   .na-grid-chart {
     grid-template-columns: 2fr 1fr;
+
     @apply mb-8;
   }
-  @media (max-width: 1024px) {
+
+  @media (width <= 1024px) {
     .na-grid-chart {
       grid-template-columns: 1fr;
     }
@@ -794,6 +827,7 @@
   .na-panel-meta {
     @apply mt-1;
   }
+
   .na-panel-actions {
     @apply flex gap-2;
   }
@@ -802,9 +836,11 @@
   .na-chart-stats {
     @apply mt-4 flex gap-4 flex-wrap;
   }
+
   .na-stat-item {
     @apply flex-1 min-w-0;
   }
+
   .na-stat-value {
     @apply mt-1;
   }
@@ -813,20 +849,27 @@
   .na-activity-list {
     @apply flex flex-col gap-3;
   }
+
   .na-activity-item {
     @apply p-3 border border-stroke-soft rounded-control bg-paper-2 transition-all cursor-pointer;
+
     text-decoration: none;
   }
+
   .na-activity-item:hover {
     @apply border-stroke bg-paper-hover;
+
     transform: translateX(2px);
   }
+
   .na-activity-item:active {
     transform: translateX(0);
   }
+
   .na-activity-data {
     @apply mt-1;
   }
+
   .na-activity-time {
     @apply mt-1;
   }
@@ -840,6 +883,7 @@
   .na-actions-list {
     @apply mt-4 flex flex-col gap-2;
   }
+
   .na-btn-full {
     @apply w-full;
   }
@@ -858,18 +902,23 @@
   .na-gap-1_5 {
     gap: var(--spacing-1_5);
   }
+
   .na-gap-2 {
     gap: var(--spacing-2);
   }
+
   .na-gap-2_5 {
     gap: var(--spacing-2_5);
   }
+
   .na-gap-3 {
     gap: var(--spacing-3);
   }
+
   .na-gap-3_5 {
     gap: var(--spacing-3_5);
   }
+
   .na-gap-6 {
     gap: var(--spacing-6);
   }
@@ -878,18 +927,23 @@
   .na-mt-1_5 {
     margin-top: var(--spacing-1_5);
   }
+
   .na-mt-2 {
     margin-top: var(--spacing-2);
   }
+
   .na-mt-2_5 {
     margin-top: var(--spacing-2_5);
   }
+
   .na-mt-3 {
     margin-top: var(--spacing-3);
   }
+
   .na-mt-3_5 {
     margin-top: var(--spacing-3_5);
   }
+
   .na-mt-6 {
     margin-top: var(--spacing-6);
   }
@@ -898,9 +952,11 @@
   .na-mb-2 {
     margin-bottom: var(--spacing-2);
   }
+
   .na-mb-3 {
     margin-bottom: var(--spacing-3);
   }
+
   .na-mb-3_5 {
     margin-bottom: var(--spacing-3_5);
   }
@@ -910,6 +966,7 @@
     margin-top: var(--spacing-3);
     margin-bottom: var(--spacing-3);
   }
+
   .na-my-3_5 {
     margin-top: var(--spacing-3_5);
     margin-bottom: var(--spacing-3_5);
@@ -919,17 +976,16 @@
   .na-grid-2 {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .na-grid-2-1 {
     grid-template-columns: 2fr 1fr;
-  }
-  .na-grid-chart-health {
-    grid-template-columns: 1.35fr 0.65fr;
   }
 
   /* Flex Utilities */
   .na-flex {
     display: flex;
   }
+
   .na-items-center {
     align-items: center;
   }
@@ -938,10 +994,12 @@
   .na-p-2 {
     padding: var(--spacing-2);
   }
+
   .na-px-2 {
     padding-left: var(--spacing-2);
     padding-right: var(--spacing-2);
   }
+
   .na-py-2 {
     padding-top: var(--spacing-2);
     padding-bottom: var(--spacing-2);
@@ -961,6 +1019,7 @@
   .na-text-xs {
     font-size: var(--font-size-xs);
   }
+
   .na-text-sm {
     font-size: var(--font-size-sm);
   }
@@ -969,12 +1028,11 @@
   .na-mb-1 {
     margin-bottom: var(--spacing-1);
   }
-  .na-mb-2 {
-    margin-bottom: var(--spacing-2);
-  }
+
   .na-mb-4 {
     margin-bottom: var(--spacing-4);
   }
+
   .na-mt-4 {
     margin-top: var(--spacing-4);
   }
@@ -998,6 +1056,7 @@
   .na-flex-1 {
     flex: 1;
   }
+
   .na-flex-wrap {
     flex-wrap: wrap;
   }
@@ -1005,6 +1064,7 @@
   /* Chip component - small badge/pill */
   .na-chip {
     @apply inline-flex items-center px-2.5 py-1 rounded-control text-[11px] font-semibold border border-stroke-soft leading-none;
+
     background: rgba(255, 255, 255, 0.03);
     color: color-mix(in oklab, var(--color-lux) 65%, var(--color-clay));
     white-space: nowrap;
@@ -1014,13 +1074,18 @@
   .na-list {
     @apply space-y-2 list-none p-0;
   }
+
   .na-list li {
     @apply flex items-center gap-2 text-sm;
+
     color: color-mix(in oklab, var(--color-lux) 75%, var(--color-clay));
   }
-  .na-list li:before {
+
+  .na-list li::before {
     content: "•";
+
     @apply text-clay;
+
     margin-right: 0.25rem;
   }
 
@@ -1028,6 +1093,7 @@
   .na-status-list {
     @apply mt-4 flex flex-col gap-3;
   }
+
   .na-status-row {
     @apply flex justify-between items-center;
   }
@@ -1036,9 +1102,11 @@
   .na-performance {
     @apply mt-4;
   }
+
   .na-performance-value {
     @apply mt-2;
   }
+
   .na-performance-meta {
     @apply mt-1;
   }
@@ -1054,6 +1122,7 @@
   .na-kpi-row {
     @apply flex justify-between items-baseline mt-2;
   }
+
   .na-data-unit {
     @apply text-[0.6em] opacity-70;
   }
@@ -1061,9 +1130,11 @@
   /* Chart grid for health */
   .na-grid-chart-health {
     grid-template-columns: 2fr 1fr;
+
     @apply mb-8;
   }
-  @media (max-width: 1024px) {
+
+  @media (width <= 1024px) {
     .na-grid-chart-health {
       grid-template-columns: 1fr;
     }
@@ -1078,9 +1149,11 @@
   .na-chart-header {
     @apply flex justify-between mb-4;
   }
+
   .na-chart-time {
     @apply text-right;
   }
+
   .na-chart-time-active {
     @apply text-primary;
   }
@@ -1089,6 +1162,7 @@
   .na-chart-legend {
     @apply flex justify-between mt-3 pt-2 border-t border-stroke-soft;
   }
+
   .na-chart-legend-item {
     @apply text-[11px];
   }
@@ -1097,6 +1171,7 @@
   .na-card-compact {
     @apply p-4;
   }
+
   .na-card-alt {
     @apply bg-paper-2;
   }
@@ -1110,13 +1185,17 @@
   .na-status-indicator {
     @apply flex items-center gap-2 mt-2;
   }
+
   .na-status-dot {
     @apply w-2 h-2 rounded-full;
   }
+
   .na-status-dot-success {
     @apply bg-success;
+
     box-shadow: 0 0 8px var(--color-success);
   }
+
   .na-status-text-success {
     @apply text-success;
   }
@@ -1138,9 +1217,11 @@
   .na-avatar {
     @apply w-8 h-8 bg-paper-hover rounded-full border border-stroke cursor-pointer transition-all;
   }
+
   .na-avatar:hover {
     @apply border-stroke-strong bg-paper;
   }
+
   .na-avatar:focus {
     outline: 2px solid var(--color-gold);
     outline-offset: 2px;
@@ -1150,9 +1231,11 @@
   .na-data-emphasis {
     @apply font-medium text-lux;
   }
+
   .na-data-success {
     @apply text-success;
   }
+
   .na-data-warning {
     @apply text-warning;
   }
@@ -1161,9 +1244,11 @@
   .na-table-section {
     @apply mt-8;
   }
+
   .na-table-header {
     @apply flex items-center justify-between mb-4;
   }
+
   .na-table-actions {
     @apply flex gap-2;
   }
@@ -1172,6 +1257,7 @@
   .na-btn-ghost {
     @apply bg-transparent border-stroke text-clay;
   }
+
   .na-btn-ghost:hover {
     @apply border-stroke-strong bg-paper text-lux;
   }
@@ -1180,9 +1266,11 @@
   .na-topology-list {
     @apply mt-5 flex flex-col gap-4;
   }
+
   .na-topology-item {
     @apply flex flex-col;
   }
+
   .na-topology-header {
     @apply flex justify-between text-[13px] mb-1.5;
   }
@@ -1196,6 +1284,7 @@
   .na-input-range {
     @apply w-full accent-primary;
   }
+
   .na-range-labels {
     @apply flex justify-between text-[11px] text-clay mt-1;
   }
@@ -1214,6 +1303,7 @@
   .na-kpi-spacing {
     @apply mt-2;
   }
+
   .na-kpi-meta {
     @apply mt-1;
   }
@@ -1223,39 +1313,51 @@
   .na-bars .na-bar {
     animation: na-bar-grow 0.6s var(--ease-premium) both;
   }
+
   .na-bars .na-bar:nth-child(1) {
     animation-delay: 0.05s;
   }
+
   .na-bars .na-bar:nth-child(2) {
     animation-delay: 0.1s;
   }
+
   .na-bars .na-bar:nth-child(3) {
     animation-delay: 0.15s;
   }
+
   .na-bars .na-bar:nth-child(4) {
     animation-delay: 0.2s;
   }
+
   .na-bars .na-bar:nth-child(5) {
     animation-delay: 0.25s;
   }
+
   .na-bars .na-bar:nth-child(6) {
     animation-delay: 0.3s;
   }
+
   .na-bars .na-bar:nth-child(7) {
     animation-delay: 0.35s;
   }
+
   .na-bars .na-bar:nth-child(8) {
     animation-delay: 0.4s;
   }
+
   .na-bars .na-bar:nth-child(9) {
     animation-delay: 0.45s;
   }
+
   .na-bars .na-bar:nth-child(10) {
     animation-delay: 0.5s;
   }
+
   .na-bars .na-bar:nth-child(11) {
     animation-delay: 0.55s;
   }
+
   .na-bars .na-bar:nth-child(12) {
     animation-delay: 0.6s;
   }
@@ -1265,6 +1367,7 @@
       height: 0;
       opacity: 0;
     }
+
     to {
       opacity: 1;
     }
@@ -1272,10 +1375,11 @@
 
   .na-shell {
     @apply grid min-h-dvh relative z-10;
+
     grid-template-columns: 280px 1fr; /* Generous Sidebar width */
   }
 
-  @media (max-width: 1024px) {
+  @media (width <= 1024px) {
     .na-shell {
       grid-template-columns: 1fr;
     }
@@ -1292,6 +1396,7 @@
 
   .na-mark {
     @apply h-8 w-8 rounded-lg flex items-center justify-center text-void text-xs font-bold shadow-md;
+
     background: linear-gradient(to bottom right, var(--color-gold), #b45309);
   }
 
@@ -1334,6 +1439,7 @@
   /* Navigation metadata badge */
   .na-nav-meta {
     @apply ml-auto text-[10px] font-semibold px-1.5 py-0.5 rounded-sm;
+
     color: color-mix(in oklab, var(--color-lux) 50%, var(--color-clay));
     background: rgba(255, 255, 255, 0.03);
   }
@@ -1351,7 +1457,8 @@
   .na-search {
     @apply relative w-full max-w-[480px];
   }
-  @media (max-width: 768px) {
+
+  @media (width <= 768px) {
     .na-search {
       @apply max-w-full;
     }
@@ -1384,20 +1491,26 @@
     background-color: var(--color-primary);
     color: var(--color-primary-foreground);
     border: 1px solid transparent;
+
     @apply h-10 px-4 rounded-control text-[14px] font-semibold transition-all flex items-center gap-2 shadow-md;
   }
+
   .na-btn-primary:hover {
     background-color: color-mix(in oklab, var(--color-primary) 90%, var(--color-white) 10%);
     box-shadow: var(--shadow-gilded);
   }
+
   .na-iconbtn {
     @apply relative h-10 w-10 rounded-control border border-stroke bg-paper
       inline-flex items-center justify-center transition-all duration-300;
+
     transition-timing-function: var(--ease-premium);
     color: color-mix(in oklab, var(--color-lux) 70%, var(--color-clay));
   }
+
   .na-iconbtn:hover {
     @apply border-stroke-strong bg-paper-hover;
+
     box-shadow: var(--shadow-card);
     color: var(--color-lux);
     transform: translateY(-1px);
@@ -1405,6 +1518,7 @@
 
   .na-dot {
     @apply absolute -top-1 -right-1 h-3 w-3 rounded-full;
+
     background: color-mix(in oklab, var(--color-error) 70%, var(--color-white) 5%);
     box-shadow: 0 0 0 3px rgba(10, 10, 12, 0.85);
     animation: var(--animate-soft-pulse);
@@ -1429,6 +1543,7 @@
   /* Cards - Comfort Edition: 24px padding, filament effect, smooth transitions */
   .na-card {
     @apply relative overflow-hidden rounded-card border border-stroke bg-paper p-6; /* 24px padding - Comfort Edition */
+
     box-shadow: var(--shadow-card);
     transition:
       transform 300ms var(--ease-premium),
@@ -1455,15 +1570,20 @@
     background: var(--color-paper-hover);
     box-shadow: var(--shadow-lift);
   }
+
   .na-card:hover::before {
     opacity: 1;
   }
+
   .na-card-title {
     @apply text-[13px] font-semibold leading-snug;
+
     color: color-mix(in oklab, var(--color-lux) 92%, var(--color-clay));
   }
+
   .na-card-meta {
     @apply text-[12px] leading-snug;
+
     color: color-mix(in oklab, var(--color-lux) 58%, var(--color-clay));
   }
 
@@ -1477,12 +1597,8 @@
     position: relative;
     z-index: var(--z-base);
     display: grid;
-    grid-template-areas:
-      "head head head"
-      "rail main drawer"
-      "foot foot foot";
-    grid-template-columns: var(--spacing-16) 1fr 0px; /* Rail: 64px, Drawer: 0px by default */
-    grid-template-rows: var(--spacing-14) 1fr var(--spacing-8); /* Head: 56px, Foot: 32px */
+    grid-template:
+      "head head head" var(--spacing-14) "rail main drawer" 1fr "foot foot foot" var(--spacing-8) / var(--spacing-16) 1fr 0; /* Rail: 64px, Drawer: 0px by default */ /* Head: 56px, Foot: 32px */
     height: 100vh;
     width: 100vw;
     transition: grid-template-columns 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1496,14 +1612,18 @@
   /* Shell regions */
   .na-shell-head {
     grid-area: head;
+
     @apply border-b border-stroke;
+
     backdrop-filter: blur(12px);
     z-index: var(--z-40);
   }
 
   .na-shell-rail {
     grid-area: rail;
+
     @apply border-r border-stroke bg-paper;
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1513,7 +1633,9 @@
 
   .na-shell-main {
     grid-area: main;
+
     @apply bg-void;
+
     display: grid;
     grid-template-rows: 3rem 1fr; /* Toolbar: 48px, Content: 1fr */
     overflow: hidden;
@@ -1521,7 +1643,9 @@
 
   .na-shell-drawer {
     grid-area: drawer;
+
     @apply border-l border-stroke bg-paper;
+
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -1531,6 +1655,7 @@
   #na-toggle-drawer:not(:checked) ~ .na-shell-omni .na-shell-drawer {
     border-left: none;
   }
+
   #na-toggle-drawer:not(:checked) ~ .na-shell-omni .na-shell-drawer * {
     opacity: 0;
     pointer-events: none;
@@ -1538,7 +1663,9 @@
 
   .na-shell-foot {
     grid-area: foot;
+
     @apply border-t border-stroke bg-paper;
+
     z-index: var(--z-50);
   }
 
@@ -1550,6 +1677,7 @@
 
   .na-state-label {
     @apply cursor-pointer;
+
     transition: all 0.1s;
   }
 
@@ -1610,6 +1738,7 @@
     border-bottom: 1px solid var(--color-stroke);
     border-right: 1px solid var(--color-stroke);
     white-space: nowrap;
+
     @apply bg-void;
   }
 
@@ -1618,7 +1747,9 @@
     position: sticky;
     top: 0;
     z-index: var(--z-sticky-row);
+
     @apply bg-paper border-b border-stroke-strong;
+
     color: var(--color-clay);
     font-size: var(--font-size-xs);
     text-transform: uppercase;
@@ -1631,7 +1762,9 @@
     position: sticky;
     left: 0;
     z-index: var(--z-sticky-col);
+
     @apply bg-paper border-r-2 border-stroke;
+
     font-family: var(--font-family-mono);
     font-weight: var(--font-weight-medium);
   }
@@ -1639,6 +1772,7 @@
   /* Sticky Corner (header + first column intersection) */
   .na-table-frozen thead th:first-child {
     z-index: var(--z-sticky-corner);
+
     @apply bg-paper;
   }
 
@@ -1658,7 +1792,9 @@
 
   .na-status-opt {
     flex: 1;
+
     @apply text-center py-1.5 text-xs cursor-pointer bg-paper text-clay;
+
     transition: all 0.1s;
   }
 
@@ -1693,6 +1829,7 @@
   .na-kpi-icon {
     @apply h-11 w-11 rounded-xl border border-stroke-soft bg-paper
       flex items-center justify-center;
+
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
     color: color-mix(in oklab, var(--color-lux) 65%, var(--color-clay));
   }
@@ -1700,6 +1837,7 @@
   /* KPI Value - Tech style (semibold, tabular nums) */
   .na-kpi-value {
     @apply mt-2 text-[26px] font-semibold;
+
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
     line-height: 1.05;
@@ -1709,18 +1847,22 @@
   .na-kpi-label {
     /* KPI labels behave like IDE "section captions": small, crisp, not airy */
     @apply text-[11px] uppercase tracking-[0.14em] leading-none;
+
     color: color-mix(in oklab, var(--color-lux) 56%, var(--color-clay));
   }
 
   /* Trend Badge - Badge style with border and background */
   .na-trend {
     @apply text-[11px] font-semibold inline-flex items-center gap-1 rounded-control px-2 py-1 border border-stroke-soft leading-none;
+
     font-variant-numeric: tabular-nums;
     background: rgba(255, 255, 255, 0.03);
   }
+
   .na-trend.up {
     color: color-mix(in oklab, var(--color-success) 75%, var(--color-white) 10%);
   }
+
   .na-trend.down {
     color: color-mix(in oklab, var(--color-error) 75%, var(--color-white) 10%);
   }
@@ -1728,6 +1870,7 @@
   /* Panels / chart placeholder */
   .na-panel {
     @apply rounded-panel border border-stroke bg-paper p-5;
+
     box-shadow: var(--shadow-card);
   }
 
@@ -1738,11 +1881,13 @@
   /* Panel title */
   .na-panel-title {
     @apply text-sm font-semibold;
+
     color: var(--color-lux);
   }
 
   .na-editorial {
     @apply font-serif italic tracking-wide;
+
     color: color-mix(in oklab, var(--color-lux) 50%, var(--color-clay));
   }
 
@@ -1768,9 +1913,11 @@
 
   .na-bar {
     @apply rounded-control;
+
     background: linear-gradient(180deg, rgba(228, 228, 231, 0.2), rgba(228, 228, 231, 0.06));
     border: 1px solid rgba(255, 255, 255, 0.06);
   }
+
   .na-bar.gold {
     background: linear-gradient(180deg, rgba(212, 181, 114, 0.55), rgba(212, 181, 114, 0.16));
     border-color: rgba(212, 181, 114, 0.25);
@@ -1782,6 +1929,7 @@
   /* Table wrap - Comfort Edition: rounded-panel with shadow */
   .na-table-wrap {
     @apply rounded-panel border border-stroke bg-paper overflow-hidden;
+
     box-shadow: var(--shadow-card);
   }
 
@@ -1794,6 +1942,7 @@
   .na-th {
     @apply sticky top-0 z-10 text-left px-4 py-3 text-[11px] font-medium uppercase tracking-[0.14em] leading-none
       border-b border-stroke bg-paper-2/75 backdrop-blur;
+
     color: color-mix(in oklab, var(--color-lux) 58%, var(--color-clay));
   }
 
@@ -1801,11 +1950,13 @@
   .na-table th {
     @apply sticky top-0 z-10 text-left px-4 py-3 text-[11px] font-medium uppercase tracking-[0.14em] leading-none
       border-b border-stroke bg-paper-2/75 backdrop-blur;
+
     color: color-mix(in oklab, var(--color-lux) 58%, var(--color-clay));
   }
 
   .na-tr {
     @apply border-b border-stroke-soft;
+
     transition:
       background-color 220ms var(--ease-smooth),
       color 220ms var(--ease-smooth);
@@ -1819,9 +1970,11 @@
   .na-tr-interactive {
     @apply cursor-pointer;
   }
+
   .na-tr-interactive:hover {
     background: rgba(255, 255, 255, 0.04);
   }
+
   .na-tr-interactive:focus {
     outline: 2px solid var(--color-gold);
     outline-offset: -2px;
@@ -1851,32 +2004,42 @@
   .na-lineage-viz {
     @apply p-6 bg-paper-2 rounded-panel border border-stroke-soft;
   }
+
   .na-lineage-content {
     @apply flex flex-col gap-4;
   }
+
   .na-lineage-section {
     @apply flex flex-col;
   }
+
   .na-lineage-heading {
     @apply mb-3;
   }
+
   .na-lineage-badges-large {
     @apply flex flex-wrap gap-2;
   }
+
   .na-lineage-badge {
     @apply cursor-pointer transition-all;
+
     text-decoration: none;
   }
+
   .na-lineage-badge:hover {
     transform: translateY(-1px);
     filter: brightness(1.1);
   }
+
   .na-lineage-current {
     @apply p-4 bg-paper border-2 border-primary rounded-card;
   }
+
   .na-lineage-current-content {
     @apply flex justify-between items-center;
   }
+
   .na-lineage-meta {
     @apply mt-1;
   }
@@ -1885,7 +2048,8 @@
   .na-grid-metadata {
     grid-template-columns: 1fr 1fr;
   }
-  @media (max-width: 1024px) {
+
+  @media (width <= 1024px) {
     .na-grid-metadata {
       grid-template-columns: 1fr;
     }
@@ -1895,39 +2059,50 @@
   .na-quality-metrics {
     @apply flex flex-col gap-4;
   }
+
   .na-quality-item {
     @apply flex flex-col;
   }
+
   .na-quality-header {
     @apply flex justify-between mb-2;
   }
+
   .na-progress-bar {
     @apply h-1 bg-paper-2 rounded-sm overflow-hidden;
   }
+
   .na-progress-fill {
     @apply h-full bg-success transition-all duration-500;
+
     animation: na-progress-grow 0.8s var(--ease-premium) both;
   }
+
   @keyframes na-progress-grow {
     from {
       width: 0;
     }
   }
+
   .na-quality-issues {
     @apply mt-4 p-4 bg-paper-2 rounded-control;
   }
+
   .na-quality-issues-count {
     @apply mt-2;
   }
+
   .na-issues-list {
     @apply mt-3 flex flex-col gap-2;
   }
+
   .na-issue-item {
     @apply p-2 bg-paper rounded-control border border-stroke-soft;
   }
   /* Table cell - Dense but readable: remove "hairline" weight + align digits */
   .na-td {
     @apply px-4 py-3 text-[13px] font-normal leading-relaxed;
+
     font-variant-numeric: tabular-nums;
     color: color-mix(in oklab, var(--color-lux) 82%, var(--color-clay));
   }
@@ -1935,6 +2110,7 @@
   /* Table cell compatibility - also support .na-table td for legacy */
   .na-table td {
     @apply px-4 py-3 text-[13px] font-normal leading-relaxed;
+
     font-variant-numeric: tabular-nums;
     color: color-mix(in oklab, var(--color-lux) 82%, var(--color-clay));
     border-bottom: 1px solid var(--color-stroke-soft);
@@ -1956,8 +2132,10 @@
   /* Status Badge - Modern style with dot indicator and color-mix */
   .na-status {
     @apply inline-flex items-center gap-2 rounded-control px-2.5 py-1 text-[11px] font-semibold border border-stroke-soft leading-none;
+
     background: rgba(255, 255, 255, 0.03);
   }
+
   .na-status::before {
     content: "";
     width: 7px;
@@ -1965,9 +2143,11 @@
     border-radius: 999px;
     background: rgba(228, 228, 231, 0.25);
   }
+
   .na-status.ok {
     color: color-mix(in oklab, var(--color-success) 75%, var(--color-white) 10%);
   }
+
   .na-status.ok::before {
     background: color-mix(in oklab, var(--color-success) 70%, var(--color-white) 10%);
   }
@@ -1975,6 +2155,7 @@
   .na-status.pending {
     color: color-mix(in oklab, var(--color-warning) 75%, var(--color-white) 10%);
   }
+
   .na-status.pending::before {
     background: color-mix(in oklab, var(--color-warning) 70%, var(--color-white) 10%);
   }
@@ -1982,6 +2163,7 @@
   .na-status.bad {
     color: color-mix(in oklab, var(--color-error) 75%, var(--color-white) 10%);
   }
+
   .na-status.bad::before {
     background: color-mix(in oklab, var(--color-error) 70%, var(--color-white) 10%);
   }
@@ -1990,6 +2172,7 @@
   .na-status.warn {
     color: color-mix(in oklab, var(--color-warning) 75%, var(--color-white) 10%);
   }
+
   .na-status.warn::before {
     background: color-mix(in oklab, var(--color-warning) 70%, var(--color-white) 10%);
   }
@@ -1997,11 +2180,14 @@
   .na-rowbtn {
     @apply h-10 w-10 rounded-control border border-stroke-soft bg-paper
       inline-flex items-center justify-center transition-all duration-300;
+
     transition-timing-function: var(--ease-premium);
     color: color-mix(in oklab, var(--color-lux) 60%, var(--color-clay));
   }
+
   .na-rowbtn:hover {
     @apply border-stroke-strong bg-paper-hover;
+
     box-shadow: var(--shadow-card);
     color: var(--color-lux);
   }
@@ -2009,13 +2195,16 @@
   /* Footer hint */
   .na-footnote {
     @apply mt-4 text-xs;
+
     color: color-mix(in oklab, var(--color-lux) 50%, var(--color-clay));
   }
+
   .na-footnote-link {
     color: var(--color-gold);
     text-decoration: none;
     transition: color 200ms var(--ease-smooth);
   }
+
   .na-footnote-link:hover {
     color: color-mix(in oklab, var(--color-gold) 90%, var(--color-white) 10%);
     text-decoration: underline;
@@ -2029,6 +2218,7 @@
   /* Empty state container (card-like but purposeful) */
   .na-empty {
     @apply rounded-card border border-stroke bg-paper-2 p-5;
+
     box-shadow: var(--shadow-card);
   }
 
@@ -2044,6 +2234,7 @@
   /* Neo-Analog "instrument" illustration (no SVG needed) */
   .na-empty-illustration {
     @apply relative h-12 w-12 rounded-xl border border-stroke-soft bg-paper overflow-hidden;
+
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
@@ -2069,11 +2260,13 @@
 
   .na-empty-title {
     @apply text-sm font-semibold;
+
     color: color-mix(in oklab, var(--color-lux) 92%, var(--color-clay));
   }
 
   .na-empty-desc {
     @apply mt-1 text-xs leading-relaxed;
+
     color: color-mix(in oklab, var(--color-lux) 58%, var(--color-clay));
     max-width: 60ch;
   }
@@ -2081,6 +2274,7 @@
   /* "Reason tag" for why it's empty */
   .na-empty-tag {
     @apply mt-3 inline-flex items-center gap-2 rounded-control px-2.5 py-1 text-[11px] font-semibold border border-stroke-soft;
+
     background: rgba(255, 255, 255, 0.03);
     color: color-mix(in oklab, var(--color-lux) 60%, var(--color-clay));
   }
@@ -2101,6 +2295,7 @@
   /* Onboarding coach card */
   .na-coach {
     @apply mt-4 rounded-card border border-stroke bg-paper p-4;
+
     box-shadow: var(--shadow-card);
   }
 
@@ -2111,23 +2306,27 @@
   .na-coach-icon {
     @apply h-9 w-9 rounded-lg border border-stroke-soft bg-paper-2
       inline-flex items-center justify-center;
+
     color: color-mix(in oklab, var(--color-gold) 70%, var(--color-white) 10%);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
   .na-coach-title {
     @apply text-sm font-semibold tracking-tight;
+
     letter-spacing: -0.01em;
     color: var(--color-lux);
   }
 
   .na-coach-sub {
     @apply mt-0.5 text-xs;
+
     color: color-mix(in oklab, var(--color-lux) 55%, var(--color-clay));
   }
 
   .na-coach-steps {
     @apply mt-3 space-y-2;
+
     counter-reset: na-step;
   }
 
@@ -2138,12 +2337,14 @@
   .na-step-num {
     @apply h-6 w-6 rounded-control border border-stroke-soft
       inline-flex items-center justify-center text-[11px] font-semibold;
+
     color: color-mix(in oklab, var(--color-lux) 70%, var(--color-clay));
     background: rgba(255, 255, 255, 0.03);
   }
 
   .na-step-text {
     @apply text-xs leading-relaxed;
+
     color: color-mix(in oklab, var(--color-lux) 65%, var(--color-clay));
   }
 
@@ -2155,6 +2356,7 @@
   .na-hintchip {
     @apply inline-flex items-center gap-2 rounded-control px-2.5 py-1 text-[11px] font-semibold
       border border-stroke-soft;
+
     background: rgba(255, 255, 255, 0.03);
     color: color-mix(in oklab, var(--color-lux) 60%, var(--color-clay));
   }
@@ -2195,6 +2397,7 @@
 
   .na-skeleton {
     @apply rounded-xl border border-stroke-soft bg-paper-2/70 overflow-hidden;
+
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
@@ -2317,14 +2520,17 @@
   .na-density-compact .na-kpi-label {
     letter-spacing: 0.14em;
   }
+
   .na-density-compact .na-th {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
   }
+
   .na-density-compact .na-td {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
   }
+
   .na-density-compact .na-rowbtn {
     height: 36px;
     width: 36px;
@@ -2412,6 +2618,7 @@
   /* The coach overlay sits inside the surface */
   .na-first-run {
     @apply mt-4 rounded-card border border-stroke bg-paper p-4;
+
     box-shadow: var(--shadow-card);
     position: relative;
     overflow: hidden;
@@ -2454,7 +2661,7 @@
   }
 
   /* Default state: READY (if you don't set anything) */
-  .na-stateful:not([data-ui-state]):not(.is-loading):not([data-state="first-run"]) .na-slot--ready {
+  .na-stateful:not([data-ui-state], .is-loading, [data-state="first-run"]) .na-slot--ready {
     display: block;
   }
 
@@ -2499,6 +2706,7 @@
   /* ---------- Error UI (Neo-Analog: calm + precise) ---------- */
   .na-error {
     @apply rounded-card border border-stroke bg-paper-2 p-5;
+
     box-shadow: var(--shadow-card);
   }
 
@@ -2509,17 +2717,20 @@
   .na-error-icon {
     @apply h-12 w-12 rounded-xl border border-stroke-soft bg-paper
       inline-flex items-center justify-center;
+
     color: color-mix(in oklab, var(--color-error) 70%, var(--color-white) 10%);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
   .na-error-title {
     @apply text-sm font-semibold;
+
     color: var(--color-lux);
   }
 
   .na-error-desc {
     @apply mt-1 text-xs leading-relaxed;
+
     color: color-mix(in oklab, var(--color-lux) 58%, var(--color-clay));
     max-width: 62ch;
   }
@@ -2527,6 +2738,7 @@
   .na-error-meta {
     @apply mt-3 inline-flex items-center gap-2 rounded-control px-2.5 py-1 text-[11px] font-semibold
       border border-stroke-soft;
+
     background: rgba(255, 255, 255, 0.03);
     color: color-mix(in oklab, var(--color-lux) 60%, var(--color-clay));
     font-variant-numeric: tabular-nums;
@@ -2550,6 +2762,7 @@
     @apply inline-flex items-center justify-center gap-2 rounded-control px-4 py-2.5
       text-sm font-semibold border
       transition-all duration-300;
+
     transition-timing-function: var(--ease-premium);
     border-color: color-mix(in oklab, var(--color-error) 35%, rgba(255, 255, 255, 0.1));
     background: rgba(251, 113, 133, 0.1);
@@ -2582,7 +2795,7 @@
     pointer-events: none;
   }
 
-  @media (max-width: 640px) {
+  @media (width <= 640px) {
     .na-toasts {
       left: 1rem;
       right: 1rem;
@@ -2592,7 +2805,9 @@
 
   .na-toast {
     pointer-events: auto;
+
     @apply relative overflow-hidden rounded-card border border-stroke bg-paper;
+
     box-shadow: var(--shadow-lift);
     padding: 0.9rem 0.95rem;
     animation: var(--animate-slide-up);
@@ -2629,6 +2844,7 @@
   .na-toast-icon {
     @apply h-10 w-10 rounded-xl border border-stroke-soft bg-paper-2
       inline-flex items-center justify-center;
+
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
     color: color-mix(in oklab, var(--color-lux) 70%, var(--color-clay));
     flex: 0 0 auto;
@@ -2655,18 +2871,21 @@
 
   .na-toast-title {
     @apply text-sm font-semibold tracking-tight;
+
     letter-spacing: -0.01em;
     color: var(--color-lux);
   }
 
   .na-toast-desc {
     @apply mt-1 text-xs leading-relaxed;
+
     color: color-mix(in oklab, var(--color-lux) 60%, var(--color-clay));
     max-width: 70ch;
   }
 
   .na-toast-meta {
     @apply mt-2 inline-flex items-center gap-2 rounded-control px-2.5 py-1 text-[11px] font-semibold border border-stroke-soft;
+
     background: rgba(255, 255, 255, 0.03);
     color: color-mix(in oklab, var(--color-lux) 58%, var(--color-clay));
     font-variant-numeric: tabular-nums;
@@ -2679,6 +2898,7 @@
   .na-toast-close {
     @apply h-9 w-9 rounded-control border border-stroke-soft bg-paper
       inline-flex items-center justify-center;
+
     color: color-mix(in oklab, var(--color-lux) 55%, var(--color-clay));
     transition:
       transform 240ms var(--ease-premium),
@@ -2766,18 +2986,22 @@
   .na-field {
     @apply grid gap-2;
   }
+
   .na-label {
     @apply text-[11px] uppercase tracking-[0.14em] leading-none;
+
     color: color-mix(in oklab, var(--color-lux) 62%, var(--color-clay));
   }
 
   .na-control {
     @apply relative;
   }
+
   .na-input,
   .na-select,
   .na-textarea {
     @apply w-full rounded-control bg-paper border border-stroke px-4 py-2 text-[13px] leading-snug outline-none;
+
     transition:
       border-color 240ms var(--ease-premium),
       box-shadow 240ms var(--ease-premium),
@@ -2808,6 +3032,7 @@
   /* Hint / help text */
   .na-help {
     @apply text-xs leading-relaxed;
+
     color: color-mix(in oklab, var(--color-lux) 52%, var(--color-clay));
   }
 
@@ -2819,12 +3044,14 @@
   .na-inline-icon {
     @apply mt-0.5 h-5 w-5 rounded-control border border-stroke-soft bg-paper
       inline-flex items-center justify-center;
+
     flex: 0 0 auto;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
   .na-inline-text {
     @apply text-xs leading-relaxed;
+
     color: color-mix(in oklab, var(--color-lux) 62%, var(--color-clay));
   }
 
@@ -2937,6 +3164,7 @@
   .na-modal:target {
     opacity: 1;
     pointer-events: auto;
+    z-index: 80; /* Active modal always above other fixed UI (toasts, menus) */
   }
 
   .na-modal:target .na-modal__panel {
@@ -2949,6 +3177,8 @@
      If :has() unsupported, it simply won't lock; modal still works. */
   body:has(.na-modal:target) {
     overflow: hidden;
+    overscroll-behavior: contain;
+    touch-action: none;
   }
 
   /* Header */
@@ -2991,12 +3221,14 @@
 
   .na-modal__title {
     @apply text-sm font-semibold tracking-tight;
+
     letter-spacing: -0.01em;
     color: var(--color-lux);
   }
 
   .na-modal__desc {
     @apply mt-1 text-xs leading-relaxed;
+
     color: color-mix(in oklab, var(--color-lux) 58%, var(--color-clay));
     max-width: 70ch;
   }
@@ -3004,6 +3236,7 @@
   .na-modal__close {
     @apply h-10 w-10 rounded-control border border-stroke-soft bg-paper
       inline-flex items-center justify-center;
+
     color: color-mix(in oklab, var(--color-lux) 55%, var(--color-clay));
     transition:
       transform 240ms var(--ease-premium),
@@ -3078,10 +3311,6 @@
     pointer-events: auto;
   }
 
-  /* Active modal always above other fixed UI (toasts, menus) */
-  .na-modal:target {
-    z-index: 80;
-  }
 
   /* Optional: dim toasts when a modal is open (keeps focus on dialog) */
   body:has(.na-modal:target) .na-toasts {
@@ -3090,19 +3319,13 @@
     pointer-events: none;
   }
 
-  /* Prevent background scrolling on iOS-ish browsers as well */
-  body:has(.na-modal:target) {
-    overscroll-behavior: contain;
-    touch-action: none;
-  }
-
   body:has(.na-modal:target) .na-modal__panel {
     touch-action: auto;
   }
 
   /* ---- Mobile sheet mode (default on small screens) ----
      Keeps same class names; modal becomes bottom sheet that slides up. */
-  @media (max-width: 640px) {
+  @media (width <= 640px) {
     .na-modal {
       place-items: end center; /* bottom */
       padding: 0.75rem;
@@ -3163,7 +3386,7 @@
 
   /* ---- Optional modifier: force center modal even on mobile ----
      Use: <div class="na-modal na-modal--center" ...> */
-  @media (max-width: 640px) {
+  @media (width <= 640px) {
     .na-modal--center {
       place-items: center;
     }
@@ -3282,6 +3505,7 @@
   .na-modal__panel:has(.na-confirm-input:valid) .na-confirm-input {
     border-color: color-mix(in oklab, var(--color-success) 35%, rgba(255, 255, 255, 0.1));
     box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
+    animation: na-inkpulse 420ms var(--ease-premium);
   }
 
   /* =========================================================
@@ -3296,18 +3520,23 @@
     0% {
       transform: translateX(0);
     }
+
     20% {
       transform: translateX(-2px);
     }
+
     40% {
       transform: translateX(2px);
     }
+
     60% {
       transform: translateX(-2px);
     }
+
     80% {
       transform: translateX(2px);
     }
+
     100% {
       transform: translateX(0);
     }
@@ -3317,9 +3546,11 @@
     0% {
       box-shadow: 0 0 0 0 rgba(52, 211, 153, 0);
     }
+
     45% {
       box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.1);
     }
+
     100% {
       box-shadow: 0 0 0 0 rgba(52, 211, 153, 0);
     }
@@ -3338,10 +3569,6 @@
     border-radius: var(--radius-card);
   }
 
-  /* When valid: gentle "ink pulse" to acknowledge success */
-  .na-modal__panel:has(.na-confirm-input:valid) .na-confirm-input {
-    animation: na-inkpulse 420ms var(--ease-premium);
-  }
 
   /* Reduced motion: disable animations */
   @media (prefers-reduced-motion: reduce) {
@@ -3359,6 +3586,7 @@
 
   .na-details {
     @apply rounded-card border border-stroke bg-paper overflow-hidden;
+
     box-shadow: var(--shadow-card);
   }
 
@@ -3373,6 +3601,7 @@
 
   .na-summary {
     @apply list-none cursor-pointer select-none;
+
     padding: 0.95rem 1.05rem;
     display: grid;
     grid-template-columns: 1fr auto;
@@ -3394,12 +3623,14 @@
   /* Left block inside summary */
   .na-summary-title {
     @apply text-sm font-semibold tracking-tight;
+
     letter-spacing: -0.01em;
     color: var(--color-lux);
   }
 
   .na-summary-sub {
     @apply mt-1 text-xs leading-relaxed;
+
     color: color-mix(in oklab, var(--color-lux) 58%, var(--color-clay));
     max-width: 72ch;
   }
@@ -3407,6 +3638,7 @@
   /* Right side meta / chip (optional) */
   .na-summary-chip {
     @apply inline-flex items-center gap-2 rounded-control px-2.5 py-1 text-[11px] font-semibold border border-stroke-soft;
+
     background: rgba(255, 255, 255, 0.03);
     color: color-mix(in oklab, var(--color-lux) 60%, var(--color-clay));
     white-space: nowrap;
@@ -3416,6 +3648,7 @@
   .na-summary-chevron {
     @apply h-9 w-9 rounded-control border border-stroke-soft bg-paper
       inline-flex items-center justify-center;
+
     color: color-mix(in oklab, var(--color-lux) 55%, var(--color-clay));
     transition:
       transform 260ms var(--ease-premium),
@@ -3453,7 +3686,8 @@
   /* Tactile "rail" divider inside body (optional sections) */
   .na-details-section {
     @apply rounded-card border border-stroke-soft bg-paper-2/60;
-    padding: 0.85rem 0.85rem;
+
+    padding: 0.85rem;
   }
 
   .na-details-section + .na-details-section {
@@ -3462,11 +3696,13 @@
 
   .na-details-section-title {
     @apply text-xs uppercase tracking-[0.18em] font-semibold;
+
     color: color-mix(in oklab, var(--color-lux) 55%, var(--color-clay));
   }
 
   .na-details-section-desc {
     @apply mt-2 text-xs leading-relaxed;
+
     color: color-mix(in oklab, var(--color-lux) 62%, var(--color-clay));
   }
 
@@ -3522,6 +3758,7 @@
 
   .na-summary-count {
     @apply inline-flex items-center gap-2 rounded-control px-2.5 py-1 text-[11px] font-semibold border border-stroke-soft;
+
     background: rgba(255, 255, 255, 0.03);
     color: color-mix(in oklab, var(--color-lux) 60%, var(--color-clay));
     font-variant-numeric: tabular-nums;
@@ -3586,6 +3823,7 @@
   .na-summary-flag,
   .na-summary-risk {
     @apply inline-flex items-center gap-2 rounded-control px-2.5 py-1 text-[11px] font-semibold border border-stroke-soft;
+
     background: rgba(255, 255, 255, 0.03);
     color: color-mix(in oklab, var(--color-lux) 60%, var(--color-clay));
     font-variant-numeric: tabular-nums;
@@ -3617,6 +3855,7 @@
     border-color: color-mix(in oklab, var(--color-warning) 25%, rgba(255, 255, 255, 0.1));
     background: rgba(245, 158, 11, 0.08);
     color: color-mix(in oklab, var(--color-lux) 70%, var(--color-clay));
+    animation: na-softpulse 1400ms var(--ease-premium) infinite;
   }
 
   .na-summary-flag[data-flag="dirty"]::after {
@@ -3628,17 +3867,16 @@
     0% {
       box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
     }
+
     45% {
       box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
     }
+
     100% {
       box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
     }
   }
 
-  .na-summary-flag[data-flag="dirty"] {
-    animation: na-softpulse 1400ms var(--ease-premium) infinite;
-  }
 
   /* Optional: "Saved" flag if you want it */
   .na-summary-flag[data-flag="saved"]::before {
@@ -3719,6 +3957,7 @@
     gap: 0.5rem;
     flex-wrap: nowrap;
     min-width: 0;
+    /* ensures ordering works (for auto-ordering feature) */
   }
 
   /* Standardize sizing + rhythm for anything placed in the right lane */
@@ -3735,38 +3974,31 @@
   /* Risk should feel most "important" */
   .na-summary-right :where(.na-summary-risk) {
     border-color: var(--color-stroke);
+    order: 10;
   }
 
   /* Dirty is attention, but not alarm */
   .na-summary-right :where(.na-summary-flag[data-flag="dirty"]) {
     border-color: color-mix(in oklab, var(--color-warning) 30%, rgba(255, 255, 255, 0.1));
+    order: 20;
   }
 
   /* Count is quietest */
   .na-summary-right :where(.na-summary-count) {
     opacity: 0.92;
+    order: 30;
   }
 
   /* --- Optional auto ordering (best practice) ---
      If you wrap chips inside .na-summary-right and you *don't care* about DOM order,
      this forces: Risk → Dirty → Count → Chevron
   */
-  .na-summary-right {
-    /* ensures ordering works */
-    display: flex;
-  }
 
-  .na-summary-right :where(.na-summary-risk) {
-    order: 10;
-  }
 
   .na-summary-right :where(.na-summary-flag) {
     order: 20;
   }
 
-  .na-summary-right :where(.na-summary-count) {
-    order: 30;
-  }
 
   .na-summary-right :where(.na-summary-chevron) {
     order: 99;
@@ -3777,9 +4009,6 @@
     order: 21;
   }
 
-  .na-summary-right :where(.na-summary-flag[data-flag="dirty"]) {
-    order: 20;
-  }
 
   /* Tighter spacing in nested disclosures */
   .na-details-body .na-details .na-summary-right {
@@ -3787,7 +4016,7 @@
   }
 
   /* Mobile: allow wrap if right lane is too tight */
-  @media (max-width: 420px) {
+  @media (width <= 420px) {
     .na-summary-right {
       flex-wrap: wrap;
       justify-content: flex-end;

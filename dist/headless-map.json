@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated": "2025-12-28T00:47:06.310Z",
+  "generated": "2025-12-28T10:49:16.409Z",
   "classes": {
     "na-bg-grain": {
       "position": "fixed",
@@ -278,7 +278,7 @@
       "grid-area": "main",
       "display": "grid",
       "grid-template-rows": "3rem 1fr",
-      "oolbar": "48px, Content: 1fr */\n    overflow: hidden"
+      "oolbar": "48px, Content: 1fr */\r\n    overflow: hidden"
     },
     "na-shell-drawer": {
       "border-left": "none"
@@ -350,7 +350,7 @@
       "padding-bottom": "0.5rem"
     },
     "na-tr": {
-      "transition": "background-color 220ms var(--ease-smooth),\n      color 220ms var(--ease-smooth)"
+      "transition": "background-color 220ms var(--ease-smooth),\r\n      color 220ms var(--ease-smooth)"
     },
     "na-lineage-badge": {
       "text-decoration": "none"
@@ -547,7 +547,7 @@
     },
     "na-toast-close": {
       "color": "color-mix(in oklab, var(--color-lux) 55%, var(--color-clay))",
-      "transition": "transform 240ms var(--ease-premium),\n      border-color 240ms var(--ease-premium),\n      background-color 240ms var(--ease-premium)",
+      "transition": "transform 240ms var(--ease-premium),\r\n      border-color 240ms var(--ease-premium),\r\n      background-color 240ms var(--ease-premium)",
       "flex": "0 0 auto"
     },
     "na-toast-toggle": {
@@ -662,7 +662,7 @@
         "Analog Base Palette) ": {
           "": {
             "": {
-              " */\n  ": {
+              " */\r\n  ": {
                 "": {
                   "color": {
                     "void": "#09090b"
@@ -676,8 +676,8 @@
       " Typography Primitives ": {
         "": {
           "": {
-            " */\n  /* Font Families ": {
-              " Figma Standard Naming (100% Compliance) */\n  ": {
+            " */\r\n  /* Font Families ": {
+              " Figma Standard Naming (100% Compliance) */\r\n  ": {
                 "": {
                   "font": {
                     "family": {
@@ -694,7 +694,7 @@
         " Figma Standard Scale (0px through 384px) ": {
           "": {
             "": {
-              " */\n  ": {
+              " */\r\n  ": {
                 "": {
                   "spacing0": {
                     "0": "0px"
@@ -709,7 +709,7 @@
         " Figma Standard Scale ": {
           "": {
             "": {
-              " */\n  ": {
+              " */\r\n  ": {
                 "": {
                   "radius": {
                     "none": "0"
@@ -724,7 +724,7 @@
         " Figma Standard Scale ": {
           "": {
             "": {
-              " */\n  ": {
+              " */\r\n  ": {
                 "": {
                   "shadow": {
                     "none": "none"
@@ -739,7 +739,7 @@
         " Figma Standard Scale ": {
           "": {
             "": {
-              " */\n  ": {
+              " */\r\n  ": {
                 "": {
                   "blur": {
                     "none": "0"
@@ -754,7 +754,7 @@
         " Figma Standard Scale ": {
           "": {
             "": {
-              " */\n  ": {
+              " */\r\n  ": {
                 "": {
                   "opacity0": {
                     "0": "0"
@@ -769,8 +769,8 @@
         " Figma Standard ": {
           "": {
             "": {
-              " */\n  /* Easing Functions ": {
-                " Figma Standard */\n  ": {
+              " */\r\n  /* Easing Functions ": {
+                " Figma Standard */\r\n  ": {
                   "": {
                     "ease": {
                       "linear": "linear"
@@ -787,7 +787,7 @@
           " Figma Standard Scale ": {
             "": {
               "": {
-                " */\n  ": {
+                " */\r\n  ": {
                   "": {
                     "z0": {
                       "0": "0"
@@ -802,7 +802,7 @@
       " Color Semantic Mappings (Figma Standard) ": {
         "": {
           "": {
-            " */\n  /* Base Theme */\n  ": {
+            " */\r\n  /* Base Theme */\r\n  ": {
               "": {
                 "color": {
                   "background": "var(--color-void)"
@@ -816,8 +816,8 @@
         "Compliant Extension) ": {
           "": {
             "": {
-              " */\n  /* These are valid Figma extensions ": {
-                " semantic tokens mapped to standard scale */\n  ": {
+              " */\r\n  /* These are valid Figma extensions ": {
+                " semantic tokens mapped to standard scale */\r\n  ": {
                   "": {
                     "radius": {
                       "card": "var(--radius-xl)"
@@ -833,8 +833,8 @@
         "Compliant Extension) ": {
           "": {
             "": {
-              " */\n  /* Semantic opacity tokens mapped to standard scale ": {
-                " valid Figma extensions */\n  ": {
+              " */\r\n  /* Semantic opacity tokens mapped to standard scale ": {
+                " valid Figma extensions */\r\n  ": {
                   "": {
                     "opacity": {
                       "disabled": "var(--opacity-50)"
@@ -846,14 +846,14 @@
           }
         }
       },
-      " Typography Extensions": "Data & Metadata (Figma-Compliant Extension) --- */\n  \n  \n  --data-size: 0.875rem",
+      " Typography Extensions": "Data & Metadata (Figma-Compliant Extension) --- */\r\n  \r\n  \r\n  --data-size: 0.875rem",
       " Animation Extensions (Figma": {
         "Compliant Extension) ": {
           "": {
             "": {
-              " */\n  /* Neo": {
+              " */\r\n  /* Neo": {
                 "Analog animation definitions using custom easing ": {
-                  " valid Figma extensions */\n  ": {
+                  " valid Figma extensions */\r\n  ": {
                     "": {
                       "animate": {
                         "fade": {
@@ -1114,23 +1114,23 @@
       "lg": "0.5rem",
       "xl": "0.75rem",
       "full": "9999px",
-      "xl */\n  ": {
+      "xl */\r\n  ": {
         "": {
           "radius": {
             "panel": "var(--radius-2xl)"
           }
         }
       },
-      "lg */\n\n  /* ": {
+      "lg */\r\n\r\n  /* ": {
         "": {
           "": {
             " Custom Shadow Tokens (Figma": {
               "Compliant Extension) ": {
                 "": {
                   "": {
-                    " */\n  /* Neo": {
+                    " */\r\n  /* Neo": {
                       "Analog signature shadows ": {
-                        " valid Figma extensions */\n  ": {
+                        " valid Figma extensions */\r\n  ": {
                           "": {
                             "shadow": {
                               "card": "0 1px 2px -1px rgba(0, 0, 0, 0.5), 0 1px 0 0 rgba(255, 255, 255, 0.03) inset"
@@ -1295,44 +1295,44 @@
       "tooltip": "1070",
       "toast": "1080"
     },
-    "radius2xl */\n  ": {
+    "radius2xl */\r\n  ": {
       "": {
         "radius": {
           "control": "var(--radius-lg)"
         }
       }
     },
-    "opacity50 */\n  ": {
+    "opacity50 */\r\n  ": {
       "": {
         "opacity": {
           "hover": "var(--opacity-80)"
         }
       }
     },
-    "opacity80 */\n  ": {
+    "opacity80 */\r\n  ": {
       "": {
         "opacity": {
           "pressed": "var(--opacity-60)"
         }
       }
     },
-    "opacity60 */\n  ": {
+    "opacity60 */\r\n  ": {
       "": {
         "opacity": {
           "focus": "var(--opacity-90)"
         }
       }
     },
-    "opacity90 */\n\n  /* ": {
+    "opacity90 */\r\n\r\n  /* ": {
       "": {
         "": {
           " Custom Easing Functions (Figma": {
             "Compliant Extension) ": {
               "": {
                 "": {
-                  " */\n  /* Neo": {
+                  " */\r\n  /* Neo": {
                     "Analog premium easing curves ": {
-                      " valid Figma extensions */\n  ": {
+                      " valid Figma extensions */\r\n  ": {
                         "": {
                           "ease": {
                             "premium": "cubic-bezier(0.2, 0, 0, 1)"

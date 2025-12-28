@@ -451,6 +451,10 @@
   }
 }
 @layer utilities {
+  .\@container\/main {
+    container-type: inline-size;
+    container-name: main;
+  }
   .visible {
     visibility: visible;
   }
@@ -585,6 +589,9 @@
   .w-full {
     width: 100%;
   }
+  .flex-1 {
+    flex: 1;
+  }
   .flex-shrink {
     flex-shrink: 1;
   }
@@ -694,6 +701,9 @@
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
   }
+  .border-\[var\(--color-stroke\)\] {
+    border-color: var(--color-stroke);
+  }
   .border-amber-900\/50 {
     border-color: color-mix(in srgb, oklch(41.4% 0.112 45.904) 0.5, transparent);
     @supports (color: color-mix(in lab, red, red)) {
@@ -732,6 +742,9 @@
   }
   .bg-\[\#121214\] {
     background-color: #121214;
+  }
+  .bg-\[var\(--color-gold\)\] {
+    background-color: var(--color-gold);
   }
   .bg-\[var\(--color-paper\)\] {
     background-color: var(--color-paper);
@@ -823,11 +836,17 @@
   .px-6 {
     padding-inline: var(--spacing-6);
   }
+  .px-\[var\(--spacing-6\)\] {
+    padding-inline: var(--spacing-6);
+  }
   .py-0 {
     padding-block: var(--spacing-0);
   }
   .py-1 {
     padding-block: var(--spacing-1);
+  }
+  .py-2 {
+    padding-block: var(--spacing-2);
   }
   .py-4 {
     padding-block: var(--spacing-4);
@@ -835,8 +854,14 @@
   .py-6 {
     padding-block: var(--spacing-6);
   }
+  .py-\[var\(--spacing-4\)\] {
+    padding-block: var(--spacing-4);
+  }
   .text-left {
     text-align: left;
+  }
+  .text-right {
+    text-align: right;
   }
   .font-mono {
     font-family: var(--font-mono);
@@ -922,6 +947,9 @@
   }
   .text-\[\.\.\.\] {
     color: ...;
+  }
+  .text-\[var\(--color-void\)\] {
+    color: var(--color-void);
   }
   .text-black {
     color: var(--color-black);
@@ -1193,6 +1221,21 @@
     &:focus {
       --tw-outline-style: none;
       outline-style: none;
+    }
+  }
+  .md\:gap-6 {
+    @media (width >= 48rem) {
+      gap: var(--spacing-6);
+    }
+  }
+  .md\:py-6 {
+    @media (width >= 48rem) {
+      padding-block: var(--spacing-6);
+    }
+  }
+  .lg\:px-6 {
+    @media (width >= 64rem) {
+      padding-inline: var(--spacing-6);
     }
   }
 }

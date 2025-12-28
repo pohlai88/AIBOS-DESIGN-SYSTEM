@@ -1,3 +1,5 @@
+import neoAnalogPlugin from './eslint-plugin-neo-analog/index.js';
+
 export default [
   {
     ignores: [
@@ -26,10 +28,16 @@ export default [
         exports: "readonly",
       },
     },
+    plugins: {
+      'neo-analog': neoAnalogPlugin,
+    },
     rules: {
       "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
       "no-console": "off",
       "no-undef": "off", // Allow undefined globals for config files
+      // Neo-Analog Design System Rules
+      "neo-analog/no-arbitrary-values": "error",
+      "neo-analog/prefer-semantic-classes": "warn",
     },
   },
 ];

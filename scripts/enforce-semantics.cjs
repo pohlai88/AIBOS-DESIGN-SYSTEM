@@ -15,7 +15,7 @@ const FORBIDDEN = [
   { regex: /bg-\[#.*?\]/g, message: "Hardcoded hex background. Use semantic bg-* classes." },
   { regex: /text-\[#.*?\]/g, message: "Hardcoded hex text color. Use semantic text-* classes." },
   { regex: /rounded-\[\d+px\]/g, message: "Hardcoded radius. Use .rounded-card, .rounded-panel." },
-  { regex: /font-(sans|serif|mono)/g, message: "Direct font-family usage. Use .na-h*, .na-data, or .na-editorial." },
+  { regex: /font-family:\s*(?!var\(--font-)/g, message: "Direct font-family usage. Use var(--font-*) tokens or semantic classes." },
 ];
 
 // 2. Define the Allowed Contexts (Files to scan)
