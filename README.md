@@ -297,7 +297,9 @@ import type { DesignTokens } from '@aibos/design-system/tokens/typescript'
 ### For External Users
 
 - **[EXTERNAL_USAGE.md](./EXTERNAL_USAGE.md)** ⭐ **START HERE** - How to install and use as npm package
-- **[PUBLISHING_GUIDE.md](./PUBLISHING_GUIDE.md)** - How to publish updates to npm
+- **[API_REFERENCE.md](./API_REFERENCE.md)** - Complete typography, spacing, and component reference
+- **[NPM Publishing Guide](./docs/NPM_PUBLISHING_GUIDE.md)** - How to publish to npm via GitHub Actions
+- **[Publishing Guide](./docs/PUBLISHING_GUIDE.md)** - Manual publishing instructions
 
 ### For Developers
 
