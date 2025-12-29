@@ -37,7 +37,9 @@
     "format:check": "prettier --check \"**/*.{css,js,ts,json,md}\"",
     "validate": "node scripts/validate-design-tokens.js",
     "validate:all": "pnpm lint && pnpm validate && pnpm enforce:semantics",
-    "quality": "pnpm validate:all"
+    "quality": "pnpm validate:all",
+    "prepublishOnly": "pnpm build && pnpm validate:all",
+    "prepare": "pnpm build"
   },
   "main": "./style.css",
   "exports": {
@@ -50,9 +52,14 @@
     "style.css",
     "input.css",
     "dist/**/*",
+    "lib/**/*.ts",
+    "lib/**/*.js",
     "README.md",
-    "API_REFERENCE.md",
-    "EXTERNAL_USAGE.md"
+    "docs/API_REFERENCE.md",
+    "docs/EXTERNAL_USAGE.md",
+    "docs/QUICK_REFERENCE.md",
+    "docs/INTEGRATION_GUIDE.md",
+    "LICENSE"
   ],
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
